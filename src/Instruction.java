@@ -7,6 +7,7 @@ public class Instruction
 	public int dest_reg;
 	public int immediate;
 	public int target;
+	public int result;
 
 	public Instruction()
 	{
