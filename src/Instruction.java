@@ -1,19 +1,12 @@
-/*
-	Instruction
-
-	Author: Maher Khan
-
- */
-
 public class Instruction
 {
-	private int address;
-	private String opcode;
-	private int source_reg1;
-	private int source_reg2;
-	private int dest_reg;
-	private int immediate;
-	private int target;
+	public int address;
+	public String opcode;
+	public int source_reg1;
+	public int source_reg2;
+	public int dest_reg;
+	public int immediate;
+	public int target;
 	public Double source_reg1_value;
 	public Double source_reg2_value;
 	public Double dest_reg_value;
@@ -29,82 +22,26 @@ public class Instruction
 		this.target = -1;
 	}
 
-	// Getter
-	public int getAddess() 
-	{
-		return this.address;
-	}
+	public int getAddess()  { return this.address; }
+	public void setAddress(int address) { this.address = address; }
 
-	// Setter
-	public void setAddress(int address) {
-		this.address = address;
-	}
+	public String getOpcode() { return this.opcode; }
+	public void setOpcode(String opcode) { this.opcode = opcode; }
 
-	// Getter
-	public String getOpcode() 
-	{
-		return this.opcode;
-	}
+	public int getSourceReg1() { return this.source_reg1; }
+	public void setSourceReg1(int source_reg1) { this.source_reg1 = source_reg1; }
 
-	// Setter
-	public void setOpcode(String opcode) {
-		this.opcode = opcode;
-	}
+	public int getSourceReg2() { return this.source_reg2; }
+	public void setSourceReg2(int source_reg2) { this.source_reg2 = source_reg2; }
 
-	// Getter
-	public int getSourceReg1() 
-	{
-		return this.source_reg1;
-	}
+	public int getDestReg() { return this.dest_reg; }
+	public void setDestReg(int dest_reg) { this.dest_reg = dest_reg; }
 
-	// Setter
-	public void setSourceReg1(int source_reg1) {
-		this.source_reg1 = source_reg1;
-	}
+	public int getImmediate() { return this.immediate; }
+	public void setImmediate(int immediate) { this.immediate = immediate; }
 
-	// Getter
-	public int getSourceReg2() 
-	{
-		return this.source_reg2;
-	}
-
-	// Setter
-	public void setSourceReg2(int source_reg2) {
-		this.source_reg2 = source_reg2;
-	}
-
-	// Getter
-	public int getDestReg() 
-	{
-		return this.dest_reg;
-	}
-
-	// Setter
-	public void setDestReg(int dest_reg) {
-		this.dest_reg = dest_reg;
-	}
-
-	// Getter
-	public int getImmediate() 
-	{
-		return this.immediate;
-	}
-
-	// Setter
-	public void setImmediate(int immediate) {
-		this.immediate = immediate;
-	}
-
-	// Getter
-	public int getTarget() 
-	{
-		return this.target;
-	}
-
-	// Setter
-	public void setTarget(int target) {
-		this.target = target;
-	}
+	public int getTarget() { return this.target; }
+	public void setTarget(int target) { this.target = target; }
 
 	public String toString()
 	{
