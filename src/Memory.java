@@ -1,8 +1,6 @@
 /*
-	Memory
-
-	Author: Maher Khan
-
+ * Memory
+ * Author: Maher Khan
  */
 
 import java.util.HashMap;
@@ -17,10 +15,6 @@ public class Memory
 		this.memory = new HashMap<Integer, Mem>();
 	}
 	
-
-	/*
-		To add an integer to the memmory
-	 */
 	public void add_int(int address, int val)
 	{
 		Mem mem = new Mem();
@@ -29,10 +23,6 @@ public class Memory
 		this.memory.put(address, mem);
 	}
 
-
-	/*
-		To add a float to the memmory
-	 */
 	public void add_float(int address, double val)
 	{
 		Mem mem = new Mem();
@@ -41,10 +31,6 @@ public class Memory
 		this.memory.put(address, mem);
 	}
 
-
-	/*
-		To retrieve an int value from the memmory
-	 */
 	public int get_int(int address)
 	{
 		Mem mem = this.memory.get(address);
@@ -58,10 +44,6 @@ public class Memory
 		}
 	}
 
-
-	/*
-		To retrieve a float value from the memmory
-	 */
 	public double get_float(int address)
 	{
 		Mem mem = this.memory.get(address);
@@ -98,12 +80,9 @@ public class Memory
 
 		public String toString()
 		{
-			if(isFloat)
-			{
+			if(isFloat) {
 				return Double.toString(float_val);
-			}
-			else
-			{
+			} else {
 				return Integer.toString(int_val);
 			}
 		}
