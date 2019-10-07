@@ -5,6 +5,25 @@ public class Simulator
 {
 	private int cycle;
 
+	// TODO parameterize these
+	private CDB cdb = new CDB(4);
+	private ROB rob = new ROB(16);
+	private WB wb = new WB(1);
+
+	private ArrayList<Unit> units = new ArrayList<Unit>;
+	units[0] = new IntUnit();
+	units[1] = new MultUnit();
+	units[2] = new LoadStoreUnit();
+	units[3] = new FPAddUnit();
+	units[4] = new FPMultUnit();
+	units[5] = new FPDivUnit();
+	units[6] = new BranchUnit();
+
+	// TODO parameterize this
+	private Issuer issuer = new Issuer(8, 4, units);
+
+	private int pc;
+
 	public Simulator()
 	{
 		this.cycle = 0;
@@ -13,11 +32,43 @@ public class Simulator
 	private void run_cycle()
 	{
 		this.cycle = this.cycle + 1;
+		// TODO prioritization policy, multiple instructions
+		// TODO stall if necessary
+		Instruction inst = rob.peek();
+		if (inst && !cdb.isFull()) {
+			cdb.push(inst);
+			rob.dequeue();
+		}
+
+		// can multiple instructions write back at the same time?
+		// TODO check push/enqueue ret val, support multiple insts
+		// TODO stall if necessary
+		// TODO pull from units instead of wb?
+		inst = wb.peek();
+		if (inst && !cdb.isFull() && !rob.isFull()) {
+			cdb.push(inst);
+			rob.enqueue(inst);
+			wb.dequeue();
+		}
+
+		// TODO get finished instruction from each unit
+		for (Unit unit : units)
+			unit.doCycle();
+
+		// TODO issue instruction
+
+		// TODO BTB
+
+		// - needs to be primed for the first cycle of the simluation
+
+		cdb.clear();
 	}
 
 	/* Simulates Part 1 */
 	public void run(InstructionCache instruction_cache, Memory memory)
 	{
+		// TODO fetch instruction from instruction_cache
+		// TODO deal with PC
 		run_cycle();
 	}
 
