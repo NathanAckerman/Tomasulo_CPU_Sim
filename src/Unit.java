@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 public abstract class Unit {
 
     private final int latency;
@@ -31,14 +30,4 @@ public abstract class Unit {
     }
 
     public abstract void doCycle();
-=======
-interface Unit {
-
-    public void addInstruction(Instruction i);
-
-    public boolean isReservationFull();
-
-    public void doCycle();
-
->>>>>>> 0ebb78b... WIP: Created Unit Interface, ReservationStation class, Station class for Reservation, and started on IntUnit
 }
