@@ -3,14 +3,14 @@ import java.util.HashMap;
 
 public final class ReservationStationStatusTable {
 
-    private static HashMap<String, ArrayList<Station>> stationMap = new HashMap<>();
-    private static HashMap<String, Integer> stationSizeMap = new HashMap<>();
+    private static HashMap<UnitName, ArrayList<Station>> stationMap = new HashMap<>();
+    private static HashMap<UnitName, Integer> stationSizeMap = new HashMap<>();
 
     // No one can instantiate this class
     private ReservationStationStatusTable(){ }
 
 
-    public static boolean createStations(String unitName, int size) {
+    public static boolean createStations(UnitName unitName, int size) {
         if(stationSizeMap.containsKey(unitName) || stationMap.containsKey(unitName)) return false;
 
         stationSizeMap.put(unitName, new Integer(size));
@@ -19,7 +19,7 @@ public final class ReservationStationStatusTable {
         return true;
     }
 
-    public static boolean addInstructionToStation(String unitName, Instruction i) {
+    public static boolean addInstructionToStation(UnitName unitName, Instruction i) {
 
         if(!stationMap.containsKey(unitName)) return false;
 
@@ -32,7 +32,7 @@ public final class ReservationStationStatusTable {
 
     // If there is a station that is ready (meaning an instruction that has all of its values), return that instruction
     // so that we can send it through the Unit
-    public Instruction getNextReadyInstruction(String unitName) { 
+    public static Instruction getNextReadyInstruction(UnitName unitName) { 
         ArrayList<Station> stations = stationMap.get(unitName);
 
         for(Station s : stations){
@@ -42,7 +42,7 @@ public final class ReservationStationStatusTable {
         return null;
     }
 
-    public void updateStations() {
+    public static void updateStations() {
         // TO DO: Whenever a value is obtained from the CDB, we can update our stations
     }
     

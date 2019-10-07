@@ -12,7 +12,7 @@ public class ROB {
 	public ROB(final int size)
 	{
 		ROB_SIZE = size;
-		cur_size = 0
+		cur_size = 0;
 		front_i = 0;
 		back_i = ROB_SIZE - 1;
 	}
@@ -80,7 +80,7 @@ public class ROB {
 		back_i = incr(i);
 	}
 
-	public boolean isFull() { cur_size == ROB_SIZE; }
+	public boolean isFull() { return cur_size == ROB_SIZE; }
 
 	private int decr(int i) { return (i - 1) % ROB_SIZE; }
 	private int incr(int i) { return (i + 1) % ROB_SIZE; }

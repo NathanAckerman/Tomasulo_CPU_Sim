@@ -8,6 +8,9 @@ public class Instruction
 	public int immediate;
 	public int target;
 	public int result;
+	public Double source_reg1_value;
+	public Double source_reg2_value;
+	public Double dest_reg_Value;
 
 	public Instruction()
 	{
@@ -20,6 +23,7 @@ public class Instruction
 		this.target = -1;
 	}
 
+	// Delete this?
 	public int getAddess()  { return this.address; }
 	public void setAddress(int address) { this.address = address; }
 
