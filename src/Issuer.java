@@ -1,16 +1,18 @@
 import java.util.*;
 public class Issuer {
-	
-	int size_limit;//how many instrs can be queued
-	int issue_limit;//how many insts can be issued in one cycle
-	Queue<Instruction> queue;
-	//TODO need reference to the reservation units
 
-	Issuer(int size, int issue_num)
+	private int size_limit;//how many instrs can be queued
+	private int issue_limit;//how many insts can be issued in one cycle
+	private Queue<Instruction> queue;
+
+	private ArrayList<Unit> units;
+
+	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr)
 	{
 		queue = new LinkedList<Instruction>();
 		size_limit = size;
 		issue_limit = issue_num;
+		units = unit_arr;
 	}
 
 	public boolean enqueueInstruction(Instruction instr)
