@@ -14,6 +14,9 @@ public class Instruction
 	private int dest_reg;
 	private int immediate;
 	private int target;
+	public Double source_reg1_value;
+	public Double source_reg2_value;
+	public Double dest_reg_value;
 
 	public Instruction()
 	{
