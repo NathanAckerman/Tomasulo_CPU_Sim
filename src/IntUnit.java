@@ -1,8 +1,8 @@
 
 public class IntUnit implements Unit {
-    
+    Reservation Station rs;
     public IntUnit(int numReservStation) {
-        this.rs = new ReservationStation[numReservStation];
+        this.rs = new ReservationStation(numReservStation);
     }
 
     // What is addInstruction for? Putting instructions into the reservation Station? 
