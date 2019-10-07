@@ -1,9 +1,33 @@
-interface Unit {
+public abstract class Unit {
 
-    public void addInstruction(Instruction i);
+    private final int latency;
+    private Instruction[] pipeline;
 
-    public boolean isReservationFull();
+    public Unit(int numReservStation, final int latency, UnitName unitName) {
+        ReservationStationStatusTable.createStations(unitName, numReservStation);
+        this.latency = latency;
+        this.pipeline = new Instruction[latency];
+    }
 
-    public void doCycle();
+    public void addInstruction(Instruction i) {
+            // TODO Auto-generated method stub
+    }
 
+    public Instruction shiftPipelineRight(Instruction instruction) {
+        Instruction finishedInstruction = null;
+
+        if(this.pipeline[this.pipeline.length - 1] != null) {
+            finishedInstruction = this.pipeline[this.latency - 1];
+        }
+
+        for(int i = pipeline.length - 1; i > 0; i--){
+            this.pipeline[i] = this.pipeline[i-1];
+        }
+
+        this.pipeline[0] = instruction;
+
+        return finishedInstruction;
+    }
+
+    public abstract void doCycle();
 }

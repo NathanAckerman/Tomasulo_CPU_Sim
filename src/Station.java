@@ -26,6 +26,7 @@ public class Station {
         }
 
     public boolean isWaitingOnValue(){
+        return (this.instruction.source_reg1_value == null || this.instruction.source_reg2_value == null);
     }
 
 
