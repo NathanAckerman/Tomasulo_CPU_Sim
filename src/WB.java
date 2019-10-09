@@ -36,5 +36,15 @@ public class WB
 
     }
 
+    public void reset()
+    {
+        numPushed = 0;
+    }
+
+    public void setNewPushLimit(int newLimit)
+    {
+        this.maxPushSize = newLimit;
+    }
+
 
 }
