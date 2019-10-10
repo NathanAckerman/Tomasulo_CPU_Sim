@@ -43,7 +43,7 @@ public class Parser
 				{
 					Instruction instruction = new Instruction();
 
-					instruction.setAddress(instructionCacheBaseAddress + cur_instruction_num);
+					instruction.setAddress(instructionCacheBaseAddress + cur_instruction_num);//TODO should this be 4X the instr num?
 
 					cur_instruction_num = cur_instruction_num + 1;
 

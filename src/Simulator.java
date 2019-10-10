@@ -12,6 +12,7 @@ public class Simulator
 	private BTB btb = new BTB(); 
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb);
 	private TomRenameTable rename_table = new TomRenameTable();
+	private InstructionCache instruction_cache;
 	//TODO so what are we doing with the other tables? are these all embedded in other things like the instr class
 
 
@@ -90,6 +91,8 @@ public class Simulator
 		} else if (args.length == 1) {
 			String filepath = args[0];
 			InstructionCache instruction_cache = new InstructionCache();
+			this.instruction_cache = instruction_cache;
+			this.instruction_cache.issuer = this.issuer;
 			Memory memory = new Memory();
 
 			Parser.parseFile(filepath, instruction_cache, memory);
