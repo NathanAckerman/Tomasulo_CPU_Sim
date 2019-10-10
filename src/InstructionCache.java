@@ -89,26 +89,25 @@ public class InstructionCache
 		Instruction pc_instr = findInstruction(pc);
 		clear_cacheline();
 	
-		//TODO this is if instr width is 4 but it seems like he wrote his parser as 1??
-		if ((pc-BASE_ADDR) % 16 == 0 ) { //if this instr is the first of 4 in a cache line
+		if ((pc-BASE_ADDR) % 4 == 0 ) {
 			cache_line[0] = pc_instr;
-			cache_line[1] = findInstruction(pc+4);
-			cache_line[2] = findInstruction(pc+8);
-			cache_line[3] = findInstruction(pc+12);
-		} else if ((pc-BASE_ADDR) % 16 == 4) {
-			cache_line[0] = findInstruction(pc-4);
+			cache_line[1] = findInstruction(pc+1);
+			cache_line[2] = findInstruction(pc+2);
+			cache_line[3] = findInstruction(pc+3);
+		} else if ((pc-BASE_ADDR) % 4 == 4) {
+			cache_line[0] = findInstruction(pc-1);
 			cache_line[1] = pc_instr;
-			cache_line[2] = findInstruction(pc+4);
-			cache_line[3] = findInstruction(pc+8);
-		} else if ((pc-BASE_ADDR) % 16 == 8) {
-			cache_line[0] = findInstruction(pc-8);
-			cache_line[1] = findInstruction(pc-4);
+			cache_line[2] = findInstruction(pc+1);
+			cache_line[3] = findInstruction(pc+2);
+		} else if ((pc-BASE_ADDR) % 4 == 8) {
+			cache_line[0] = findInstruction(pc-2);
+			cache_line[1] = findInstruction(pc-1);
 			cache_line[2] = pc_instr;
-			cache_line[3] = findInstruction(pc+4);
-		} else if ((pc-BASE_ADDR) % 16 == 12) {
-			cache_line[0] = findInstruction(pc-12);
-			cache_line[1] = findInstruction(pc-8);
-			cache_line[2] = findInstruction(pc-4);
+			cache_line[3] = findInstruction(pc+1);
+		} else if ((pc-BASE_ADDR) % 4 == 12) {
+			cache_line[0] = findInstruction(pc-3);
+			cache_line[1] = findInstruction(pc-2);
+			cache_line[2] = findInstruction(pc-1);
 			cache_line[3] = pc_instr;
 		}
 	}
