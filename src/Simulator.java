@@ -28,7 +28,7 @@ public class Simulator
 	// TODO parameterize this
 	private Issuer issuer = new Issuer(8, 4, units, rob);
 
-	private int pc;
+	private Integer pc;
 
 	public Simulator()
 	{
@@ -90,7 +90,7 @@ public class Simulator
 			throw new IllegalArgumentException("No test file passed to the simulator!");
 		} else if (args.length == 1) {
 			String filepath = args[0];
-			InstructionCache instruction_cache = new InstructionCache();
+			InstructionCache instruction_cache = new InstructionCache(pc);
 			this.instruction_cache = instruction_cache;
 			this.instruction_cache.issuer = this.issuer;
 			Memory memory = new Memory();

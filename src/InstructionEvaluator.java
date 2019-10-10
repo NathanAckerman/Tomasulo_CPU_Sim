@@ -2,10 +2,12 @@ import java.lang.*;
 public class InstructionEvaluator {
 	static ROB rob;
 	static BTB btb;
+	static Integer pc;
 
-	InstructionEvaluator(ROB rob, BTB btb) {
-		this.rob = rob;
-		this.btb = btb;
+	InstructionEvaluator(ROB the_rob, BTB the_btb, Integer the_pc) {
+		rob = the_rob;
+		btb = the_btb;
+		pc = the_pc;
 	}
 
 	//evaluate the result of the given instruciton
@@ -79,10 +81,12 @@ public class InstructionEvaluator {
 				if (condition_val && instr.predicted_target != instr.target) {//predicted not taken but was
 					rob.killInstructionsBetween(instr.address, 0);
 					btb.updatePrediction(instr.address, instr.target, true);
+					pc = instr.target;
 				}
-				if (!condition_val && instr.predicted_target != instr.address+4) {//predicted taken but wasnt
+				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					rob.killInstructionsBetween(instr.address, 0);
-					btb.updatePrediction(instr.address, instr.address+4, false);
+					btb.updatePrediction(instr.address, instr.address+1, false);
+					pc = instr.address+1;
 				}
 				break;
 
