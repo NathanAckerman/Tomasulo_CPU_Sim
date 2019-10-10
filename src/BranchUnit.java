@@ -10,7 +10,8 @@ public class BranchUnit extends Unit {
 
         Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(UnitName.BU);
         Instruction finishedInstruction = shiftPipelineRight(readyInstruction);
-        finishedInstruction.dest_reg_value = new Double(123123); // Would have to change this
-        moveToWBOrBuffer(finishedInstruction);
+	if (finishedInstruction != null) {
+		InstructionEvaluator.eval(finishedInstruction);
+	}
     }
 }

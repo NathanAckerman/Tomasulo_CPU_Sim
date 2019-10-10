@@ -9,20 +9,26 @@ public class Simulator
 	private CDB cdb = new CDB(4);
 	private ROB rob = new ROB(16);
 	private WB wb = new WB(1);
+	private BTB btb = new BTB(); 
+	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb);
+	private TomRenameTable rename_table = new TomRenameTable();
+	private InstructionCache instruction_cache;
+	//TODO so what are we doing with the other tables? are these all embedded in other things like the instr class
 
-	private ArrayList<Unit> units = new ArrayList<Unit>;
-	units[0] = new IntUnit();
-	units[1] = new MultUnit();
+
+	private ArrayList<Unit> units = new ArrayList<Unit>();
+	units.add(new IntUnit(4,1));
+	units[1] = new MultUnit(2,4);
 	units[2] = new LoadStoreUnit();
-	units[3] = new FPAddUnit();
-	units[4] = new FPMultUnit();
-	units[5] = new FPDivUnit();
-	units[6] = new BranchUnit();
+	units[3] = new FPAddUnit(3,3);
+	units[4] = new FPMultUnit(4,4);
+	units[5] = new FPDivUnit(2,8);
+	units[6] = new BranchUnit(2,1);
 
 	// TODO parameterize this
-	private Issuer issuer = new Issuer(8, 4, units);
+	private Issuer issuer = new Issuer(8, 4, units, rob);
 
-	private int pc;
+	private Integer pc;
 
 	public Simulator()
 	{
@@ -56,7 +62,7 @@ public class Simulator
 			unit.doCycle();
 
 		// TODO issue instruction
-
+		issuer.doCycle();
 		// TODO BTB
 
 		// - needs to be primed for the first cycle of the simluation
@@ -84,7 +90,9 @@ public class Simulator
 			throw new IllegalArgumentException("No test file passed to the simulator!");
 		} else if (args.length == 1) {
 			String filepath = args[0];
-			InstructionCache instruction_cache = new InstructionCache();
+			InstructionCache instruction_cache = new InstructionCache(pc);
+			this.instruction_cache = instruction_cache;
+			this.instruction_cache.issuer = this.issuer;
 			Memory memory = new Memory();
 
 			Parser.parseFile(filepath, instruction_cache, memory);
