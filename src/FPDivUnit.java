@@ -8,6 +8,8 @@ public class FPDivUnit extends Unit {
     public void doCycle() {
         Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(UnitName.FPDIV);
         Instruction finishedInstruction = shiftPipelineRight(readyInstruction);
-        finishedInstruction.dest_reg_value = new Double(123123); // Would have to change this
+	if (finishedInstruction != null) {
+		InstructionEvaluator.eval(finishedInstruction);
+	}
     }
 }

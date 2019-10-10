@@ -7,15 +7,17 @@ public class ROB
 	// The queue is inclusive between front_i and back_i, under mod ROB_SIZE
 	private int front_i;
 	private int back_i;
+	private TomRenameTable rename_table;
 
 	private ArrayList<Instruction> queue = new ArrayList<Instruction>();
 
-	public ROB(final int size)
+	public ROB(final int size, TomRenameTable table)
 	{
 		ROB_SIZE = size;
-		cur_size = 0
+		cur_size = 0;
 		front_i = 0;
 		back_i = ROB_SIZE - 1;
+		rename_table = table;
 	}
 
 	public boolean enqueue(Instruction inst)
@@ -25,6 +27,7 @@ public class ROB
 
 		back_i = incr(back_i);
 		queue[back_i] = inst;
+		rename_table.put(instr.dest_reg, back_i);
 		cur_size += 1;
 		return true;
 	}
@@ -49,6 +52,7 @@ public class ROB
 		// will this work?
 		// it needs to be cleared to avoid false positives
 		// in instruction killing
+		rename_table.remove(inst.dest_reg);
 		queue[front_i] = null;
 		front_i = decr(front_i);
 		cur_size -= 1;
@@ -112,7 +116,7 @@ public class ROB
 		back_i = incr(i);
 	}
 
-	public boolean isFull() { cur_size == ROB_SIZE; }
+	public boolean isFull() { return cur_size == ROB_SIZE; }
 
 	private int decr(int i) { return (i - 1) % ROB_SIZE; }
 	private int incr(int i) { return (i + 1) % ROB_SIZE; }

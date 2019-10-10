@@ -8,6 +8,8 @@ public class MultUnit extends Unit {
     public void doCycle() {
         Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(UnitName.MULT);
         Instruction finishedInstruction = shiftPipelineRight(readyInstruction);
-        finishedInstruction.dest_reg_value = new Double(123123); // Would have to change this
+	if (finishedInstruction != null) {
+		InstructionEvaluator.eval(finishedInstruction);
+	}
     }
 }

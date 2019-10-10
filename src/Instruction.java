@@ -7,9 +7,11 @@ public class Instruction
 	public int dest_reg;
 	public int immediate;
 	public int target;
+	public int predicted_target;
 	public Double source_reg1_value;
 	public Double source_reg2_value;
 	public Double dest_reg_value;
+	public boolean invalid;
 
 	public Instruction()
 	{
@@ -20,6 +22,7 @@ public class Instruction
 		this.dest_reg = -1;
 		this.immediate = -1;
 		this.target = -1;
+		this.invalid = false;
 	}
 
 	public int getAddess()  { return this.address; }

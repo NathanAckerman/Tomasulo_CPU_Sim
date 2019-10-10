@@ -46,7 +46,7 @@ public final class ReservationStationStatusTable {
         // TO DO: Whenever a value is obtained from the CDB, we can update our stations
     }
 
-    public static boolean isReservationStationFull() {
+    public static boolean isReservationStationFull(UnitName unitName) {
         // TO DO:
         return false;
     }
