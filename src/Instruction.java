@@ -5,6 +5,9 @@ public class Instruction
 	public int source_reg1;
 	public int source_reg2;
 	public int dest_reg;
+	public String source_reg1_str;
+	public String source_reg2_str;
+	public String dest_reg_str;
 	public int immediate;
 	public int target;
 	public int predicted_target;

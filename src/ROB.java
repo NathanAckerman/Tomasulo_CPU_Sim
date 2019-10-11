@@ -27,7 +27,7 @@ public class ROB
 
 		back_i = incr(back_i);
 		queue[back_i] = inst;
-		rename_table.put(inst.dest_reg, back_i);
+		rename_table.put(inst.dest_reg_str, back_i);
 		cur_size += 1;
 		return true;
 	}
@@ -52,7 +52,7 @@ public class ROB
 		// will this work?
 		// it needs to be cleared to avoid false positives
 		// in instruction killing
-		rename_table.remove(inst.dest_reg);
+		rename_table.remove(inst.dest_reg_str);
 		queue[front_i] = null;
 		front_i = decr(front_i);
 		cur_size -= 1;
