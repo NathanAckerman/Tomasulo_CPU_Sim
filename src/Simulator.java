@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.*;
 import java.lang.IllegalArgumentException;
 
 public class Simulator
@@ -28,7 +28,7 @@ public class Simulator
 	// TODO parameterize this
 	private Issuer issuer = new Issuer(8, 4, units, rob);
 
-	private Integer pc;
+	private Integer pc = 1000;
 
 	public Simulator()
 	{
