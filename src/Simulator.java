@@ -90,7 +90,7 @@ public class Simulator
 			throw new IllegalArgumentException("No test file passed to the simulator!");
 		} else if (args.length == 1) {
 			String filepath = args[0];
-			InstructionCache instruction_cache = new InstructionCache(pc);
+			InstructionCache instruction_cache = new InstructionCache(Issuer, pc);
 			this.instruction_cache = instruction_cache;
 			this.instruction_cache.issuer = this.issuer;
 			Memory memory = new Memory();
