@@ -8,9 +8,9 @@ public class Instruction
 	public int immediate;
 	public int target;
 	public int predicted_target;
-	public Double source_reg1_value;
-	public Double source_reg2_value;
-	public Double dest_reg_value;
+	public Float source_reg1_value;
+	public Float source_reg2_value;
+	public Float dest_reg_value;
 	public boolean invalid;
 
 	public Instruction()

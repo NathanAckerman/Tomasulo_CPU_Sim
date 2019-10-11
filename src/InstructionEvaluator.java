@@ -12,32 +12,32 @@ public class InstructionEvaluator {
 
 	//evaluate the result of the given instruciton
 	//if it it a branch instruction, also update the BTB and PC
-	//note: the casting is done because you cant do bitwise operations on doubles
+	//note: the casting is done because you cant do bitwise operations on floats
 	public static void eval(Instruction instr)
 	{
 		switch (instr.opcode) {
 			case "and":
-				instr.dest_reg_value = (double)((Double.doubleToRawLongBits(instr.source_reg1_value) & Double.doubleToRawLongBits(instr.source_reg2_value)));		
+				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.source_reg2_value)));		
 				break;
 
 			case "andi":
-				instr.dest_reg_value = (double)((Double.doubleToRawLongBits(instr.source_reg1_value) & Double.doubleToRawLongBits(instr.immediate)));		
+				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.immediate)));		
 				break;
 
 			case "or":
-				instr.dest_reg_value = (double)((Double.doubleToRawLongBits(instr.source_reg1_value) & Double.doubleToRawLongBits(instr.source_reg2_value)));		
+				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.source_reg2_value)));		
 				break;
 
 			case "ori":
-				instr.dest_reg_value = (double)((Double.doubleToRawLongBits(instr.source_reg1_value) & Double.doubleToRawLongBits(instr.immediate)));		
+				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.immediate)));		
 				break;
 
 			case "slt":
-				instr.dest_reg_value = (double)((Double.doubleToRawLongBits(instr.source_reg1_value) & Double.doubleToRawLongBits(instr.source_reg2_value)));		
+				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.source_reg2_value)));		
 				break;
 
 			case "slti":
-				instr.dest_reg_value = (double)((Double.doubleToRawLongBits(instr.source_reg1_value) & Double.doubleToRawLongBits(instr.immediate)));		
+				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.immediate)));		
 				break;
 
 			case "add":
@@ -95,10 +95,12 @@ public class InstructionEvaluator {
 				if (condition_val2 && instr.predicted_target != instr.target) {//predicted not taken but was
 					rob.killInstructionsBetween(instr.address, 0);
 					btb.updatePrediction(instr.address, instr.target, true);
+					pc = instr.target;
 				}
-				if (!condition_val2 && instr.predicted_target != instr.address+4) {//predicted taken but wasnt
+				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					rob.killInstructionsBetween(instr.address, 0);
-					btb.updatePrediction(instr.address, instr.address+4, false);
+					btb.updatePrediction(instr.address, instr.address+1, false);
+					pc = instr.address+1;
 				}
 				break;
 

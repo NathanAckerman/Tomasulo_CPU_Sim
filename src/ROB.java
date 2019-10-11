@@ -27,7 +27,7 @@ public class ROB
 
 		back_i = incr(back_i);
 		queue[back_i] = inst;
-		rename_table.put(instr.dest_reg, back_i);
+		rename_table.put(inst.dest_reg, back_i);
 		cur_size += 1;
 		return true;
 	}
