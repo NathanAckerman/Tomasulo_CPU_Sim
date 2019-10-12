@@ -18,12 +18,12 @@ public class Simulator
 
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 	units.add(new IntUnit(4,1));
-	units[1] = new MultUnit(2,4);
-	units[2] = new LoadStoreUnit();
-	units[3] = new FPAddUnit(3,3);
-	units[4] = new FPMultUnit(4,4);
-	units[5] = new FPDivUnit(2,8);
-	units[6] = new BranchUnit(2,1);
+	units.add(new MultUnit(2,4));
+	units.add(new LoadStoreUnit());
+	units.add(new FPAddUnit(3,3));
+	units.add(new FPMultUnit(4,4));
+	units.add(new FPDivUnit(2,8));
+	units.add(new BranchUnit(2,1));
 
 	// TODO parameterize this
 	private Issuer issuer = new Issuer(8, 4, units, rob);
