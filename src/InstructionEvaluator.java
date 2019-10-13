@@ -2,12 +2,14 @@ import java.lang.*;
 public class InstructionEvaluator {
 	static ROB rob;
 	static BTB btb;
+	static Memory mem;
 	static Integer pc;
 
-	InstructionEvaluator(ROB the_rob, BTB the_btb, Integer the_pc) {
+	InstructionEvaluator(ROB the_rob, BTB the_btb, Memory the_mem, Integer the_pc) {
 		rob = the_rob;
 		btb = the_btb;
 		pc = the_pc;
+		mem = the_mem;
 	}
 
 	//evaluate the result of the given instruciton
@@ -76,14 +78,32 @@ public class InstructionEvaluator {
 				instr.dest_reg_value = instr.source_reg1_value / instr.source_reg2_value;
 				break;
 
+			case "ld":
+				instr.dest_reg_value = mem.get_int(instr.source_reg1_value + instr.immediate);
+				break;
+
+			case "sd":
+				mem.add_int(instr.source_reg1_value + instr.immediate, instr.dest_reg_value);
+				break;
+
+			case "fld":
+				instr.dest_reg_value = mem.get_float(instr.source_reg1_value + instr.immediate);
+				break;
+
+			case "fsd":
+				mem.add_float(instr.source_reg1_value + instr.immediate, instr.dest_reg_value);
+				break;
+
 			case "beq":
 				boolean condition_val = (instr.source_reg1_value == instr.source_reg1_value);
 				if (condition_val && instr.predicted_target != instr.target) {//predicted not taken but was
+					// TODO get ROB index
 					rob.killInstructionsBetween(instr.address, 0);
 					btb.updatePrediction(instr.address, instr.target, true);
 					pc = instr.target;
 				}
 				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
+					// TODO get ROB index
 					rob.killInstructionsBetween(instr.address, 0);
 					btb.updatePrediction(instr.address, instr.address+1, false);
 					pc = instr.address+1;
@@ -93,11 +113,13 @@ public class InstructionEvaluator {
 			case "bne":
 				boolean condition_val2 = (instr.source_reg1_value != instr.source_reg1_value);
 				if (condition_val2 && instr.predicted_target != instr.target) {//predicted not taken but was
+					// TODO get ROB index
 					rob.killInstructionsBetween(instr.address, 0);
 					btb.updatePrediction(instr.address, instr.target, true);
 					pc = instr.target;
 				}
 				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
+					// TODO get ROB index
 					rob.killInstructionsBetween(instr.address, 0);
 					btb.updatePrediction(instr.address, instr.address+1, false);
 					pc = instr.address+1;
