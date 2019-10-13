@@ -61,4 +61,9 @@ public class Instruction
 		result += "target: " + Integer.toString(this.target) +"\n";
 		return result;
 	}
+
+	public boolean isWaitingOnValue()
+	{
+		return source_reg1_value == null || source_reg2_value == null;
+	}
 }
