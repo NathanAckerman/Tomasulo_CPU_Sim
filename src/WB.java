@@ -3,15 +3,12 @@ import java.util.Collections;
 
 public class WB
 {
-    // private ROB rob;
     private int maxPushSize;
     private int numPushed;
     private ArrayList<Unit> units;
 
-    // public WB(final ROB rob, int maxPushSize){} ---> Please delete the method signature below when we have ROB
     public WB(int maxPushSize, ArrayList<Unit> unit_arr)
     {
-        // this.rob = rob;
         this.maxPushSize = maxPushSize;
         this.numPushed = 0;
         this.units = unit_arr;
@@ -52,15 +49,6 @@ public class WB
         }
 
         return readiedInstructions;
-        
-        //boolean CDBSuccess = CDB.push(i); ---> Please delete CDBSuccess below when we have CDB
-        boolean CDBSuccess = false;
-
-        if (!CDBSuccess) System.out.println("Something went wrong... this should never happen");
-
-        //ROB.push(i); // TO-DO
-        numPushed +=1;
-
     }
 
     public void reset()
