@@ -17,7 +17,7 @@ public class Simulator
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem, pc);
 	private InstructionCache instruction_cache;
 	public ArrayList<Unit> units = new ArrayList<Unit>();
-	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table);
+	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table, instruction_cache, btb);
 
 
 	public Simulator()

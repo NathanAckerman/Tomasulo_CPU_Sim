@@ -9,8 +9,11 @@ public class Issuer {
 	private ROB rob;
 	private int total_issued;
 	private TomRenameTable rename_table;
+	private InstructionCache fetcher;
+	private BTB btb;
+	private RegisterFile regfile;
 
-	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob, TomRenameTable the_rename_table)
+	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob, TomRenameTable the_rename_table, InstructionCache the_fetcher, BTB the_btb, RegisterFile regfile)
 	{
 		queue = new LinkedList<Instruction>();
 		size_limit = size;
@@ -19,6 +22,9 @@ public class Issuer {
 		this.rob = rob;
 		total_issued = 0;
 		rename_table = the_rename_table;
+		fetcher = the_fetcher;
+		btb = the_btb;
+		this.regfile = regfile;
 	}
 
 	public boolean enqueueInstruction(Instruction instr)
@@ -27,6 +33,10 @@ public class Issuer {
 			return false;
 		} else {
 			queue.add(instr);
+			if (instr.opcode.equals("beq") || instr.opcode.equals("bne")) {
+				int addr = btb.predict(instr.address);
+				fetcher.next_pc = addr;
+			}
 			return true;
 		}
 	}
@@ -49,13 +59,24 @@ public class Issuer {
 		UnitName unit_name = getUnitName(head);
 		int rob_index = rob.enqueue(head);
 		head.dest_reg_renamed_str = Integer.toString(rob_index);
-		head.source_reg1_renamed_str = Integer.toString(rename_table.getRename(head.source_reg1_original_str));
-		head.source_reg2_renamed_str = Integer.toString(rename_table.getRename(head.source_reg2_original_str));
+		Integer rename_s1 = rename_table.getRename(head.source_reg1_original_str);
+		Integer rename_s2 = rename_table.getRename(head.source_reg2_original_str);
+		if (rename_s1 == null) {
+			head.source_reg1_renamed_str = null;
+		} else {
+			head.source_reg1_renamed_str = Integer.toString(rename_s1);
+		}
+		if (rename_s2 == null) {
+			head.source_reg2_renamed_str = null;
+		} else {
+			head.source_reg2_renamed_str = Integer.toString(rename_s2);
+		}
+		regfile.read(head);
 		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
 	}
 
-	public boolean killInstr(Instruction instr) {
-		queue.remove(instr);
+	public boolean killInstr() {
+		queue.clear();
 	}
 
 	private UnitName getUnitName(Instruction instr)

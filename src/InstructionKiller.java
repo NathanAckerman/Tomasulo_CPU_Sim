@@ -15,7 +15,7 @@ public class InstructionKiller {
 		
 		//find and kill the instruction if in the issuer
 		if (!killed_in_units) {
-			sim.issuer.killInstr(instr);
+			sim.issuer.killInstr();
 		}
 
 		//need to unmap the register it reserved because it was going to write into it

@@ -10,6 +10,7 @@ public class InstructionCache
 	private int num_instr_in_left_unissued;
 	private Issuer issuer;
 	private Integer pc;
+	public Integer next_pc;
 
 	public InstructionCache(Issuer issuer, Integer pc)
 	{
@@ -18,6 +19,7 @@ public class InstructionCache
 		num_instr_in_left_unissued = 0;
 		this.issuer = null;
 		this.pc = pc;
+		this.next_pc = pc+1;
 	}
 
 	public String toString()
@@ -50,7 +52,13 @@ public class InstructionCache
 			get_cache_line_with_pc(pc);
 			issueInstructions();
 		}
-		pc = pc+1;
+		if (next_pc == null) {
+			pc = pc+1;
+			next_pc = pc + 1;
+		} else {
+			pc = next_pc;
+			next_pc = pc+1;
+		}
 	}
 
 	private void issueInstructions()
