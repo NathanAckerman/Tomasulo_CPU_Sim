@@ -8,6 +8,13 @@ public class RegisterFile
     private HashMap<String, Integer> intRegistersRenamed = new HashMap<String, Integer>();
     private HashMap<String, Float> floatRegistersRenamed = new HashMap<String, Float>();
 
+    private Memory mem;
+
+    public RegisterFile(Memory the_mem)
+    {
+	    mem = the_mem;
+    }
+
     // Fill out the instruction with values
     public void read(Instruction i)
     {
