@@ -9,8 +9,9 @@ public class Simulator
 
 	// TODO parameterize these
 	private Memory mem = new Memory();
-	private CDB cdb = new CDB(4);
-	private ROB rob = new ROB(16);
+	public RegisterFile rf = new RegisterFile(mem);
+	private CDB cdb = new CDB(4, this);
+	public ROB rob = new ROB(16);
 	private WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem);
@@ -39,24 +40,12 @@ public class Simulator
 	private void run_cycle()
 	{
 		this.cycle = this.cycle + 1;
-		int rob_ready = rob.queryReadyInstructions();
-		int wb_ready = wb.queryReadyInstructions();
+
 		// TODO parameterize this
-		int rob_max_cdb = 2;
-
-		for (int i = 0; i < rob_max_cdb; i++) {
-			Instruction inst = rob.dequeue();
-			if (!inst)
-				break;
-			cdb.push(inst);
-		}
-
-		for (; !cdb.isFull();) {
-			Instruction inst = wb.dequeue();
-			if (!inst)
-				break;
-			cdb.push(inst);
-		}
+		// this also does wb and rob
+		int cdb_bw = 4;
+		int min_rob_bw = 2;
+		cdb.doCycle(cdb_bw, min_rob_bw);
 
 		// TODO move items from wb to cdb
 
