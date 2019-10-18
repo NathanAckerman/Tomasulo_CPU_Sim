@@ -8,11 +8,12 @@ public class Simulator
 	// TODO parameterize these
 	private Memory mem = new Memory();
 	private CDB cdb = new CDB(4);
-	private ROB rob = new ROB(16);
+	private InstructionKiller instr_killer = new InstructionKiller(this);
+	private ROB rob = new ROB(16, instr_killer);
 	private WB wb = new WB(1);
 	private BTB btb = new BTB(); 
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem);
-	private TomRenameTable rename_table = new TomRenameTable();
+	public TomRenameTable rename_table = new TomRenameTable();
 	private InstructionCache instruction_cache;
 	//TODO so what are we doing with the other tables? are these all embedded in other things like the instr class
 
@@ -20,7 +21,7 @@ public class Simulator
 	private ArrayList<Unit> units = new ArrayList<Unit>();
 
 	// TODO parameterize this
-	private Issuer issuer = new Issuer(8, 4, units, rob);
+	public Issuer issuer = new Issuer(8, 4, units, rob);
 
 	private Integer pc = 1000;
 

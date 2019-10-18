@@ -79,15 +79,15 @@ public class InstructionEvaluator {
 				break;
 
 			case "ld":
-				instr.dest_reg_value = mem.get_int(instr.source_reg1_value + instr.immediate);
+				instr.dest_reg_value = new Float(mem.get_int(Math.round(instr.source_reg1_value) + instr.immediate));
 				break;
 
 			case "fld":
-				instr.dest_reg_value = mem.get_float(instr.source_reg1_value + instr.immediate);
+				instr.dest_reg_value = mem.get_float(Math.round(instr.source_reg1_value) + instr.immediate);
 				break;
 
 			case "beq":
-				boolean condition_val = (instr.source_reg1_value == instr.source_reg1_value);
+				boolean condition_val = (instr.source_reg1_value == instr.immediate);
 				if (condition_val && instr.predicted_target != instr.target) {//predicted not taken but was
 					// TODO get ROB index
 					rob.killInstructionsBetween(instr.address, 0);
@@ -103,7 +103,7 @@ public class InstructionEvaluator {
 				break;
 
 			case "bne":
-				boolean condition_val2 = (instr.source_reg1_value != instr.source_reg1_value);
+				boolean condition_val2 = (instr.source_reg1_value != instr.immediate);
 				if (condition_val2 && instr.predicted_target != instr.target) {//predicted not taken but was
 					// TODO get ROB index
 					rob.killInstructionsBetween(instr.address, 0);
@@ -119,7 +119,6 @@ public class InstructionEvaluator {
 				break;
 
 			default:
-				System.out.println("This should never run, instr opcode was not recognized");
 		}
 	}
 }

@@ -32,8 +32,7 @@ public class Issuer {
 	{
 		int num_issued = 0;
 		while (queue.size() >= 0 && num_issued < issue_limit && !rob.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))) {
-			//issueInstr(queue.remove()) TODO need reference to the reservation stations	
-			
+			issueHeadInstr();	
 			num_issued++;
 		}
 	}
@@ -44,6 +43,10 @@ public class Issuer {
 		UnitName unit_name = getUnitName(head);
 		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
 		rob.enqueue(head);
+	}
+
+	public boolean killInstr(Instruction instr) {
+		queue.remove(instr);
 	}
 
 	private UnitName getUnitName(Instruction instr)

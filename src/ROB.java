@@ -8,16 +8,18 @@ public class ROB
 	private int front_i;
 	private int back_i;
 	private TomRenameTable rename_table;
+	private InstructionKiller instr_killer;
 
 	private ArrayList<Instruction> queue = new ArrayList<Instruction>();
 
-	public ROB(final int size, TomRenameTable table)
+	public ROB(final int size, TomRenameTable table, InstructionKiller the_instr_killer)
 	{
 		ROB_SIZE = size;
 		cur_size = 0;
 		front_i = 0;
 		back_i = ROB_SIZE - 1;
 		rename_table = table;
+		instr_killer = the_instr_killer;
 	}
 
 	public boolean enqueue(Instruction inst)
@@ -100,8 +102,14 @@ public class ROB
 
 		int num_killed = 0;
 		for (int i = i1; i != (i2 == -1 ? back_i : i2); i = incr(i)) {
+			if (queue[i] != null) {
+				instr_killer.killInstructionAnywhere(queue[i]);
+			}
 			queue[i] = null;
 			num_killed++;
+		}
+		if (queue[i] != null) {
+			instr_killer.killInstructionAnywhere(queue[i]);
 		}
 		queue[i] = null;
 		num_killed++;
