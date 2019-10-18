@@ -23,7 +23,7 @@ public class Memory
 		this.memory.put(address, mem);
 	}
 
-	public void add_float(int address, double val)
+	public void add_float(int address, float val)
 	{
 		Mem mem = new Mem();
 		mem.isFloat = true;
@@ -36,7 +36,7 @@ public class Memory
 		Mem mem = this.memory.get(address);
 		if(mem.isFloat==true)
 		{
-			return (new Double(mem.float_val)).intValue();
+			return (new Float(mem.float_val)).intValue();
 		}
 		else
 		{
@@ -44,7 +44,7 @@ public class Memory
 		}
 	}
 
-	public double get_float(int address)
+	public float get_float(int address)
 	{
 		Mem mem = this.memory.get(address);
 		if(mem.isFloat==true)
@@ -53,7 +53,7 @@ public class Memory
 		}
 		else
 		{
-			return new Double(mem.int_val);
+			return new Float(mem.int_val);
 		}
 	}
 
@@ -76,12 +76,12 @@ public class Memory
 	{
 		public boolean isFloat;
 		public int int_val;
-		public double float_val;
+		public float float_val;
 
 		public String toString()
 		{
 			if(isFloat) {
-				return Double.toString(float_val);
+				return Float.toString(float_val);
 			} else {
 				return Integer.toString(int_val);
 			}
