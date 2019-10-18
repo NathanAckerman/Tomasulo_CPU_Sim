@@ -5,7 +5,7 @@ public class Unit {
     private WB wb;
     private final UnitName unitName;
 
-    public Unit(int numReservStation, final int latency, UnitName unitName) 
+    public Unit(final int latency, int numReservStation, UnitName unitName) 
     {
         ReservationStationStatusTable.createStations(unitName, numReservStation);
         this.latency = latency;
