@@ -35,8 +35,12 @@ public class ROB
 	public ArrayList<Instruction> dequeue(int count)
 	{
 		ArrayList<Instruction> arr;
-		for (int i = 0; i < count; i++)
-			arr[i] = dequeue();
+		for (int i = 0; i < count; i++) {
+			Instruction inst = dequeue();
+			if (inst == null)
+				break;
+			arr[i] = inst;
+		}
 
 		return arr;
 	}
@@ -61,6 +65,15 @@ public class ROB
 
 	public int queryReadyInstructions()
 	{
+		int count = 0;
+		for (int i = front_i, int c = 0; c < cur_size; i = incr(i), c++) {
+			if (queue[i].completed)
+				count++;
+			else
+				break;
+		}
+
+		return count;
 	}
 
 	/*
