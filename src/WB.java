@@ -37,6 +37,7 @@ public class WB
         // Grabbing count instructions
         for(int i = 0; i < count; i++){
             Instruction instr = readiedInstructions.get(i);
+            instr.completed = true;
             instructionsToPush.add(instr);
         }
 
@@ -48,7 +49,7 @@ public class WB
             }
         }
 
-        return readiedInstructions;
+        return instructionsToPush;
     }
 
     public void reset()
