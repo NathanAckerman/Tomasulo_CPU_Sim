@@ -9,7 +9,6 @@ public class BTB {
 	}
 
 	//return the addr that the next PC should be
-	//TODO address whether we start with taken or not taken prediction
 	public int predict(int address)
 	{
 		int index = getBitsForTable(address);
@@ -17,7 +16,7 @@ public class BTB {
 			return table[index].predicted_pc;
 		}
 
-		return address+4;
+		return address+1;
 	}
 
 	public void updatePrediction(int address, int predicted_pc, boolean predict_taken)
