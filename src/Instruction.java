@@ -19,6 +19,7 @@ public class Instruction
 	public Float dest_reg_value;
 	public boolean invalid;
 	public int issue_id;
+	public boolean completed;
 
 	public Instruction()
 	{
@@ -30,6 +31,7 @@ public class Instruction
 		this.immediate = -1;
 		this.target = -1;
 		this.invalid = false;
+		this.completed = false;
 	}
 
 	public int getAddess()  { return this.address; }

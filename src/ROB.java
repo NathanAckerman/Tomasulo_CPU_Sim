@@ -37,8 +37,12 @@ public class ROB
 	public ArrayList<Instruction> dequeue(int count)
 	{
 		ArrayList<Instruction> arr;
-		for (int i = 0; i < count; i++)
-			arr[i] = dequeue();
+		for (int i = 0; i < count; i++) {
+			Instruction inst = dequeue();
+			if (inst == null)
+				break;
+			arr[i] = inst;
+		}
 
 		return arr;
 	}
@@ -49,7 +53,7 @@ public class ROB
 			return null;
 
 		Instruction inst = queue[front_i];
-		if (!inst.dest_reg_value)
+		if (!inst.completed)
 			return null;
 		// will this work?
 		// it needs to be cleared to avoid false positives
@@ -61,24 +65,17 @@ public class ROB
 		return inst;
 	}
 
-	public ArrayList<Instruction> peek(int count)
+	public int queryReadyInstructions()
 	{
-		ArrayList<Instruction> arr;
-		for (int i = 0; i < count; i++)
-			arr[i] = peek();
+		int count = 0;
+		for (int i = front_i, int c = 0; c < cur_size; i = incr(i), c++) {
+			if (queue[i].completed)
+				count++;
+			else
+				break;
+		}
 
-		return arr;
-	}
-
-	public Instruction peek()
-	{
-		if (cur_size == 0)
-			return null;
-
-		Instruction inst = queue[front_i];
-		if (!inst.dest_reg_value)
-			return null;
-		return inst;
+		return count;
 	}
 
 	/*

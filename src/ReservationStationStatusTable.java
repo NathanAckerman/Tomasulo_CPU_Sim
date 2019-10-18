@@ -41,10 +41,6 @@ public final class ReservationStationStatusTable {
         return null;
     }
 
-    public static void updateStations() {
-        // TO DO: Whenever a value is obtained from the CDB, we can update our stations
-    }
-
     public static boolean isReservationStationFull(UnitName unitName) {
         return stationMap.get(unitName).size() == stationSizeMap.get(unitName).intValue();
     }
@@ -62,6 +58,16 @@ public final class ReservationStationStatusTable {
 		}
 	}
 	return false;
+    }
+
+    public static ArrayList<Instruction> getAllInstructions() {
+        ArrayList<Instruction> allInstructions = new ArrayList<Instruction>();
+
+        for(ArrayList<Instruction> instrList : stationMap.values()) {
+            allInstructions.addAll(instrList);
+        }
+
+        return allInstructions;
     }
     
 }

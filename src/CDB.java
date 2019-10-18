@@ -3,12 +3,66 @@ import java.util.Queue;
 
 public class CDB
 {
-	private final int NUM_BUSES;
+	public final int NUM_BUSES;
 	private Queue<Instruction> bus = new LinkedList<Instruction>();
+	private Simulator sim;
 
-	public CDB(final int width)
+	public CDB(final int width, Simulator the_sim)
 	{
 		NUM_BUSES = width;
+		sim = the_sim;
+	}
+
+	public void doCycle(int min_rob_bw)
+	{
+		int rob_num_ready = sim.rob.queryReadyInstructions();
+		int wb_num_ready = sim.wb.queryReadyInstructions();
+
+		int bw_for_rob = min(rob_num_ready, min_rob_bw);
+		int bw_for_wb  = min(wb_num_ready, NUM_BUSES - bw_for_rob);
+		int consumed_bw = bw_for_rob + bw_for_wb;
+
+		if (NUM_BUSES > consumed_bw) {
+			int rem_bw = NUM_BUSES - consumed_bw;
+			int rem_rob = rob_num_ready - bw_for_rob;
+			int rem_wb = wb_num_ready - bw_for_wb;
+
+			if (rem_rob > 0) {
+				int incr = min(rem_bw, rem_rob);
+				bw_for_rob += incr;
+				consumed_bw += incr;
+				rem_bw = NUM_BUSES - consumed_bw;
+			}
+
+			if (rem_bw > 0 && rem_wb > 0) {
+				int incr = min(rem_bw, rem_wb);
+				bw_for_wb += incr;
+				consumed_bw += incr;
+			}
+		}
+
+		ArrayList<Instruction> rob_insts = sim.rob.dequeue(bw_for_rob);
+		for (Instruction inst : rob_insts)
+			sim.rf.commit(inst);
+
+		ArrayList<Instruction> wb_insts = sim.wb.pull(bw_for_wb);
+
+		// putting values into reservation station instructions
+		for (Instruction inst : wb_insts) {
+			sim.rf.wb_push(inst);
+
+			ArrayList<Instruction> allInstructions = ReservationStationStatusTable.getAllInstructions();
+
+			for(Instruction reservInst : allInstructions) {
+				if(reservInst.source_reg1_renamed_str != null && reservInst.source_reg1_renamed_str.equals(inst.dest_reg_renamed_str)){
+					reservInst.source_reg1_value = inst.dest_reg_value;
+				}
+
+				if(reservInst.source_reg2_renamed_str != null && reservInst.source_reg2_renamed_str.equals(inst.dest_reg_renamed_str)){
+					reservInst.source_reg2_value = inst.dest_reg_value;
+				}
+			}
+		}
 	}
 
 	/*

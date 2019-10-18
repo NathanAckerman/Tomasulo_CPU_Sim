@@ -6,19 +6,21 @@ public class Simulator
 	private int cycle;
 	private Integer pc = 1000;
 
+	private ArrayList<Unit> units = new ArrayList<Unit>();
+
 	// TODO parameterize these
 	public TomRenameTable rename_table = new TomRenameTable();
 	private Memory mem = new Memory();
-	private CDB cdb = new CDB(4);
+	public RegisterFile rf = new RegisterFile(mem);
+	private CDB cdb = new CDB(4, this);
 	private InstructionKiller instr_killer = new InstructionKiller(this);
-	private ROB rob = new ROB(16, rename_table, instr_killer);
-	public WB wb = new WB(1);
+	public ROB rob = new ROB(16, rename_table, instr_killer);
+	public WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem, pc);
 	private InstructionCache instruction_cache;
-	public ArrayList<Unit> units = new ArrayList<Unit>();
-	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table, instruction_cache, btb);
 
+	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table, instruction_cache, btb);
 
 	public Simulator()
 	{
@@ -36,24 +38,14 @@ public class Simulator
 	private void run_cycle()
 	{
 		this.cycle = this.cycle + 1;
-		// TODO prioritization policy, multiple instructions
-		// TODO stall if necessary
-		Instruction inst = rob.peek();
-		if (inst && !cdb.isFull()) {
-			cdb.push(inst);
-			rob.dequeue();
-		}
 
-		// can multiple instructions write back at the same time?
-		// TODO check push/enqueue ret val, support multiple insts
-		// TODO stall if necessary
-		// TODO pull from units instead of wb?
-		inst = wb.peek();
-		if (inst && !cdb.isFull() && !rob.isFull()) {
-			cdb.push(inst);
-			rob.enqueue(inst);
-			wb.dequeue();
-		}
+		// TODO parameterize this
+		// this also does wb and rob
+		int cdb_bw = 4;
+		int min_rob_bw = 2;
+		cdb.doCycle(cdb_bw, min_rob_bw);
+
+		// TODO move items from wb to cdb
 
 		// TODO get finished instruction from each unit
 		for (Unit unit : units)
