@@ -82,16 +82,8 @@ public class InstructionEvaluator {
 				instr.dest_reg_value = mem.get_int(instr.source_reg1_value + instr.immediate);
 				break;
 
-			case "sd":
-				mem.add_int(instr.source_reg1_value + instr.immediate, instr.dest_reg_value);
-				break;
-
 			case "fld":
 				instr.dest_reg_value = mem.get_float(instr.source_reg1_value + instr.immediate);
-				break;
-
-			case "fsd":
-				mem.add_float(instr.source_reg1_value + instr.immediate, instr.dest_reg_value);
 				break;
 
 			case "beq":

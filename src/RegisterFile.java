@@ -103,12 +103,18 @@ public class RegisterFile
                 break;
             }
             case "fmult": case "fdiv":
-	    case "fadd": case "fsub": case "fld": {
+            case "fadd": case "fsub": case "fld": {
                 fpRegisters[i.getDestReg()] = i.dest_reg_value; // Careful of dest_reg_value type here
+                break;
             }
-
+            case "sd": {
+                mem.add_int(i.source_reg1_value + i.immediate, i.dest_reg_value);
+                break;
+            }
+            case "fsd": {
+                mem.add_float(i.source_reg1_value + i.immediate, i.dest_reg_value);
+                break;
+            }
         }
     }
-        
-
 }
