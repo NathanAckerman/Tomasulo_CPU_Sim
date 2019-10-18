@@ -5,13 +5,15 @@ public class WB
     // private ROB rob;
     private int maxPushSize;
     private int numPushed;
+    private ArrayList<Unit> units;
 
     // public WB(final ROB rob, int maxPushSize){} ---> Please delete the method signature below when we have ROB
-    public WB(int maxPushSize)
+    public WB(int maxPushSize, ArrayList<Unit> unit_arr)
     {
         // this.rob = rob;
         this.maxPushSize = maxPushSize;
         this.numPushed = 0;
+        this.units = unit_arr
     }
 
     public boolean isFull() 
