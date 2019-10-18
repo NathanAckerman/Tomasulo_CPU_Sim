@@ -47,7 +47,7 @@ public class ROB
 			return null;
 
 		Instruction inst = queue[front_i];
-		if (!inst.dest_reg_value)
+		if (!inst.completed)
 			return null;
 		// will this work?
 		// it needs to be cleared to avoid false positives
@@ -66,6 +66,10 @@ public class ROB
 			arr[i] = peek();
 
 		return arr;
+	}
+
+	public int queryReadyInstructions()
+	{
 	}
 
 	public Instruction peek()

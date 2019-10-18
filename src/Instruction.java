@@ -18,6 +18,7 @@ public class Instruction
 	public Float source_reg2_value;
 	public Float dest_reg_value;
 	public boolean invalid;
+	public boolean completed;
 
 	public Instruction()
 	{
@@ -29,6 +30,7 @@ public class Instruction
 		this.immediate = -1;
 		this.target = -1;
 		this.invalid = false;
+		this.completed = false;
 	}
 
 	public int getAddess()  { return this.address; }

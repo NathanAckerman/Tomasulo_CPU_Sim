@@ -48,5 +48,7 @@ public class WB
         this.maxPushSize = newLimit;
     }
 
-
+    public int queryReadyInstructions()
+    {
+    }
 }

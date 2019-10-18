@@ -46,24 +46,26 @@ public class Simulator
 	private void run_cycle()
 	{
 		this.cycle = this.cycle + 1;
-		// TODO prioritization policy, multiple instructions
-		// TODO stall if necessary
-		Instruction inst = rob.peek();
-		if (inst && !cdb.isFull()) {
+		int rob_ready = rob.queryReadyInstructions();
+		int wb_ready = wb.queryReadyInstructions();
+		// TODO parameterize this
+		int rob_max_cdb = 2;
+
+		for (int i = 0; i < rob_max_cdb; i++) {
+			Instruction inst = rob.dequeue();
+			if (!inst)
+				break;
 			cdb.push(inst);
-			rob.dequeue();
 		}
 
-		// can multiple instructions write back at the same time?
-		// TODO check push/enqueue ret val, support multiple insts
-		// TODO stall if necessary
-		// TODO pull from units instead of wb?
-		inst = wb.peek();
-		if (inst && !cdb.isFull() && !rob.isFull()) {
+		for (; !cdb.isFull();) {
+			Instruction inst = wb.dequeue();
+			if (!inst)
+				break;
 			cdb.push(inst);
-			rob.enqueue(inst);
-			wb.dequeue();
 		}
+
+		// TODO move items from wb to cdb
 
 		// TODO get finished instruction from each unit
 		for (Unit unit : units)

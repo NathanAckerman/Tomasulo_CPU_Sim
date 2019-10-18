@@ -3,7 +3,7 @@ import java.util.Queue;
 
 public class CDB
 {
-	private final int NUM_BUSES;
+	public final int NUM_BUSES;
 	private Queue<Instruction> bus = new LinkedList<Instruction>();
 
 	public CDB(final int width)
