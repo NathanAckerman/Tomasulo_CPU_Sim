@@ -2,7 +2,8 @@ public enum UnitName
 { 
     INT, 
     MULT, 
-    LOADSTORE, 
+    LOAD,
+    STORE,
     FPADD, 
     FPMULT, 
     FPDIV, 

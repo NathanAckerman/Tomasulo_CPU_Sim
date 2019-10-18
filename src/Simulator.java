@@ -6,7 +6,7 @@ public class Simulator
 	private int cycle;
 
 	// TODO parameterize these
-	private Memory mem = new Memory
+	private Memory mem = new Memory();
 	private CDB cdb = new CDB(4);
 	private ROB rob = new ROB(16);
 	private WB wb = new WB(1);
@@ -18,13 +18,6 @@ public class Simulator
 
 
 	private ArrayList<Unit> units = new ArrayList<Unit>();
-	units.add(new IntUnit(4,1));
-	units.add(new MultUnit(2,4));
-	units.add(new LoadStoreUnit());
-	units.add(new FPAddUnit(3,3));
-	units.add(new FPMultUnit(4,4));
-	units.add(new FPDivUnit(2,8));
-	units.add(new BranchUnit(2,1));
 
 	// TODO parameterize this
 	private Issuer issuer = new Issuer(8, 4, units, rob);
@@ -34,6 +27,14 @@ public class Simulator
 	public Simulator()
 	{
 		this.cycle = 0;
+		this.units.add(new Unit(1, 4, UnitName.INT));
+		this.units.add(new Unit(4, 2, UnitName.MULT));
+		this.units.add(new Unit(1, 2, UnitName.LOAD));
+		this.units.add(new Unit(1, 2, UnitName.STORE));
+		this.units.add(new Unit(3, 3, UnitName.FPADD));
+		this.units.add(new Unit(4, 4, UnitName.FPMULT));
+		this.units.add(new Unit(8, 2, UnitName.FPDIV));
+		this.units.add(new Unit(1, 2, UnitName.BU));
 	}
 
 	private void run_cycle()

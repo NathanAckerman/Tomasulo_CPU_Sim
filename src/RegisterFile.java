@@ -2,119 +2,247 @@ import java.util.HashMap;
 
 public class RegisterFile
 {
-    private Integer[] intRegisters = new Integer[32];
-    private Float[] fpRegisters = new Float[32]; 
+    private HashMap<String, Integer> intRegisters = new HashMap<String, Integer>() {{
+        // Pre-populating
+        for(int i = 0; i < 32; i++) {
+            put("R" + i, null);
+        }
+    }};
+
+    private HashMap<String, Float> fpRegisters = new HashMap<String, Float>() {{
+        // Pre-populating
+        for(int i = 0; i < 32; i++) {
+            put("F" + i, null);
+        }
+    }};
 
     private HashMap<String, Integer> intRegistersRenamed = new HashMap<String, Integer>();
-    private HashMap<String, Float> floatRegistersRenamed = new HashMap<String, Float>();
+    private HashMap<String, Float> fpRegistersRenamed = new HashMap<String, Float>();
 
     private Memory mem;
 
     public RegisterFile(Memory the_mem)
     {
-	    mem = the_mem;
+        mem = the_mem;
     }
 
     // Fill out the instruction with values
-    public void read(Instruction i)
-    {
-        //TODO: Account for renamed scheme
+    public void read(Instruction i) {
         String opcode = i.getOpcode();
-        
-        //NOTE: The parser doesnt parse correctly. It only parses for values 0-9. For values greater than 9, it will only take the first digit
-
+    
         switch (opcode) {
-            // int immediate
             case "andi": case "ori":
             case "slti": case "addi":
-            case "subi": {
-                    // The Parser is set up in such a way that first source reg must be valid and second source reg must be immediate value
-                    // I.E., addi R0, 100, R1 is invalid but addi R0, R1, 100 is valid
-                    i.source_reg1_value = intRegisters[i.getSourceReg1()];
-                    i.source_reg2_value = i.getImmediate();
-                    break;
+            case "subi": case "sd": 
+            case "ld": {
+                if(!setIntFirstRegisterValue(i)) {
+                    System.out.println(i.toString() + "produced an error");
+                }
+
+                break;
             }
+
             // int non-immediate
-            case "and": case "or":
-            case "slt": case "add":
-            case "mult": case "sub": {
-                i.source_reg1_value = intRegisters[i.getSourceReg1()];
-                i.source_reg2_value = intRegisters[i.getSourceReg2()];
+            case "and": case "or": case "slt": 
+            case "add": case "mult":
+            case "sub": {
+                if(!setIntFirstRegisterValue(i) || !setIntSecondRegisterValue(i)) {
+                    System.out.println(i.toString() + "produced an error");      
+                } 
+
                 break;
             }
 
-            // loads
-            // pretty sure floating loads still need to load their address
-            // from int registers...
-            case "ld": case "fld": {
-                i.source_reg1_value = intRegisters[i.getSourceReg1()];
-                break;
-            }
+            case "fld": case "fsd":
+            case "beq": case "bne": {
+                // NOTE FOR BRANCHES: 
+                // Parser is set up in such a way that it is always comparing a register to a value. 
+                // I.E., beq R1, R2, loop is invalid but beq R1, $5, loop is valid
+                // Assumptions: BEQ takes in only integer registers followed by one immediate
+                if(!setFPFirstRegisterValue(i)) {
+                    System.out.println(i.toString() + "produced an error");
+                }
 
-            // int store
-            case "sd": {
-                i.dest_reg_value = intRegisters[i.dest_reg];
-                i.source_reg1_value = intRegisters[i.getSourceReg1()];
-                break;
-            }
-
-            // float store
-            case "fsd": {
-                i.dest_reg_value = fpRegisters[i.dest_reg];
-                i.source_reg1_value = fpRegisters[i.getSourceReg1()];
                 break;
             }
 
             // floating point 
             case "fadd": case "fsub":
             case "fmult": case "fdiv": {
-                i.source_reg1_value = fpRegisters[i.getSourceReg1()];
-                i.source_reg2_value = fpRegisters[i.getSourceReg2()];
+                if(!setFPFirstRegisterValue(i) || !setFPSecondRegisterValue(i)) {
+                    System.out.println(i.toString() + "produced an error");      
+                }  
                 break;
             }
 
-            case "beq": case "bne": {
-                // Parser is set up in such a way that it is always comparing a register to a value. 
-                // I.E., beq R1, R2, loop is invalid but beq R1, $5, loop is valid
-                // I am going to assume that these beq takes in only INTEGER FLOATING POINT
-
-                i.source_reg1_value = intRegisters[i.getSourceReg1()];
-                i.source_reg2_value = i.getImmediate();
-                break;
-            }
             default: 
                 System.out.println("Opcode " + opcode + " is either invalid or has not been considered");
         }
     }
 
-    public void commit(Instruction i){
-        // The only thing that we are allowing to committ are opcodes that does integer/floating point arithmetic and for storing words.
-        
+    public boolean commit(Instruction i) {
+
         String opcode = i.getOpcode();
 
         switch (opcode) {
+            // Ignoring Store operations
+            // Ignoring Branch Instruction because I'm assuming branch instruction wont ever be pushed by WB
             case "and": case "andi":
             case "or": case "ori":
             case "slt": case "slti":
             case "add": case "addi":
             case "sub": case "subi":
             case "mult": case "ld": {
-                intRegisters[i.getDestReg()] = i.dest_reg_value; // Careful of dest_reg_value type here
-                break;
+                return CommitToIntRegisters(i);
             }
             case "fmult": case "fdiv":
-            case "fadd": case "fsub": case "fld": {
-                fpRegisters[i.getDestReg()] = i.dest_reg_value; // Careful of dest_reg_value type here
-                break;
+            case "fadd": case "fsub":
+            case "fld": {
+                return CommitToFPRegisters(i);
             }
             case "sd": {
-                mem.add_int(i.source_reg1_value + i.immediate, i.dest_reg_value);
-                break;
+                mem.add_int(i.source_reg1_value.intValue() + i.immediate, i.dest_reg_value.intValue());
+                return true;
             }
             case "fsd": {
-                mem.add_float(i.source_reg1_value + i.immediate, i.dest_reg_value);
-                break;
+                mem.add_float(i.source_reg1_value.intValue() + i.immediate, i.dest_reg_value.intValue());
+                return false;
+            }
+            default: {
+                System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
+                System.out.println("Error happened with instruction detail:\n" + i.toString());
+                return false;
             }
         }
+    }
+
+    public boolean wb_push(Instruction i){
+        String opcode = i.getOpcode();
+
+        switch (opcode) {
+            // Ignoring Store operations
+            // Ignoring Branch Instruction because I'm assuming branch instruction wont ever be pushed by WB
+            case "and": case "andi":
+            case "or": case "ori":
+            case "slt": case "slti":
+            case "add": case "addi":
+            case "sub": case "subi":
+            case "mult": case "ld": {
+                return pushToIntRegistersRenamed(i);
+            }
+            case "fmult": case "fdiv":
+            case "fadd": case "fsub":
+            case "fld": {
+                return pushToFPRegistersRenamed(i);
+            }
+            default: {
+                System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
+                System.out.println("Error happened with instruction detail:\n" + i.toString());
+                return false;
+            }
+        }
+    }
+
+
+    public boolean setIntFirstRegisterValue(Instruction i){
+        if(intRegistersRenamed.containsKey(i.source_reg1_renamed_str)) {
+            i.source_reg1_value = intRegistersRenamed.get(i.source_reg1_renamed_str).floatValue();
+            return true;
+        }else if(intRegisters.containsKey(i.source_reg1_original_str)) {
+            i.source_reg1_value = intRegisters.get(i.source_reg1_original_str).floatValue();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean setIntSecondRegisterValue(Instruction i){
+        if(intRegistersRenamed.containsKey(i.source_reg2_renamed_str)) {
+            i.source_reg2_value = intRegistersRenamed.get(i.source_reg2_renamed_str).floatValue();
+            return true;
+        }else if(intRegisters.containsKey(i.source_reg2_original_str)) {
+            i.source_reg2_value = intRegisters.get(i.source_reg2_original_str).floatValue();
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean setFPFirstRegisterValue(Instruction i){
+        if(fpRegistersRenamed.containsKey(i.source_reg1_renamed_str)) {
+            i.source_reg1_value = fpRegistersRenamed.get(i.source_reg1_renamed_str).floatValue();
+            return true;
+        }else if(fpRegisters.containsKey(i.source_reg1_original_str)) {
+            i.source_reg1_value = fpRegisters.get(i.source_reg1_original_str).floatValue();
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean setFPSecondRegisterValue(Instruction i){
+        if(fpRegistersRenamed.containsKey(i.source_reg2_renamed_str)) {
+            i.source_reg2_value = fpRegistersRenamed.get(i.source_reg2_renamed_str).floatValue();
+            return true;
+        }else if(fpRegisters.containsKey(i.source_reg2_original_str)) {
+            i.source_reg2_value = fpRegisters.get(i.source_reg2_original_str).floatValue();
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public boolean pushToIntRegistersRenamed(Instruction i) {
+        if (intRegistersRenamed.size() < 8 || intRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
+            intRegistersRenamed.put(i.dest_reg_renamed_str, i.dest_reg_value.intValue());
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean pushToFPRegistersRenamed(Instruction i) {
+        if (fpRegistersRenamed.size() < 8 || fpRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
+            fpRegistersRenamed.put(i.dest_reg_renamed_str, i.dest_reg_value);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean CommitToIntRegisters(Instruction i) {
+
+        // All to-be committed instructions should exist in the renamed registers hashmap
+        if (!intRegistersRenamed.containsKey(i.dest_reg_renamed_str)){
+            return false;
+        }
+
+        if(!intRegisters.containsKey(i.dest_reg_original_str)) {
+            return false; // Should contain. The hashmap is pre-populated
+        }
+
+        intRegistersRenamed.remove(i.dest_reg_renamed_str);
+        intRegisters.put(i.dest_reg_original_str, i.dest_reg_value.intValue());
+
+        return true;
+        
+    }
+
+    public boolean CommitToFPRegisters(Instruction i) {
+
+        // All to-be committed instructions should exist in the renamed registers hashmap
+        if (!fpRegistersRenamed.containsKey(i.dest_reg_renamed_str)){
+            return false;
+        }
+
+        if(!fpRegisters.containsKey(i.dest_reg_original_str)) {
+            return false; // Should contain. The hashmap is pre-populated
+        }
+
+        fpRegistersRenamed.remove(i.dest_reg_renamed_str);
+        fpRegisters.put(i.dest_reg_original_str, i.dest_reg_value);
+
+        return true;
+        
     }
 }
