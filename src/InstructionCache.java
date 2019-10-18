@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.io.*;
 
 public class InstructionCache
 {
@@ -8,13 +9,15 @@ public class InstructionCache
 	private Instruction[] cache_line;
 	private int num_instr_in_left_unissued;
 	private Issuer issuer;
+	private Integer pc;
 
-	public InstructionCache(Issuer issuer)
+	public InstructionCache(Issuer issuer, Integer pc)
 	{
 		instructions = new ArrayList<Instruction>();
 		cache_line = new Instruction[4];
 		num_instr_in_left_unissued = 0;
 		this.issuer = null;
+		this.pc = pc;
 	}
 
 	public String toString()
@@ -62,7 +65,7 @@ public class InstructionCache
 				issuing = true;
 			}
 			if (issuing) {
-				if (issuer.enqueueInstruction(instr)) {
+				if (issuer.enqueueInstruction(cloneInstruction(instr))) {
 					num_sent++;
 				}
 				
@@ -118,6 +121,32 @@ public class InstructionCache
 		{
 			cache_line[i] = null;
 		}
+	}
+
+
+
+	//okay so because java is a garbage language there is no good way to deep copy an object
+	private Instruction cloneInstruction(Instruction orig_instr)
+	{
+		Instruction new_instr = null;
+		try {
+			//serialize
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(bos);
+			oos.writeObject(orig_instr);
+			oos.flush();
+			oos.close();
+			bos.close();
+			byte[] byteData = bos.toByteArray();
+
+			//unserialize
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
+			new_instr = (Instruction) new ObjectInputStream(bais).readObject();
+		} catch (Exception e) {
+			System.out.println("serialization for instr copy didn't work\n");
+			System.exit(1);
+		}
+		return new_instr;
 	}
 
 }
