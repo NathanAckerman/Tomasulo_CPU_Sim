@@ -6,13 +6,6 @@ public class Simulator
 	private int cycle;
 
 	private ArrayList<Unit> units = new ArrayList<Unit>();
-	units.add(new IntUnit(4,1));
-	units.add(new MultUnit(2,4));
-	units.add(new LoadStoreUnit());
-	units.add(new FPAddUnit(3,3));
-	units.add(new FPMultUnit(4,4));
-	units.add(new FPDivUnit(2,8));
-	units.add(new BranchUnit(2,1));
 
 	// TODO parameterize these
 	private Memory mem = new Memory();
