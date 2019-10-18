@@ -22,16 +22,16 @@ public class ROB
 		instr_killer = the_instr_killer;
 	}
 
-	public boolean enqueue(Instruction inst)
+	public int enqueue(Instruction inst)
 	{
 		if (isFull())
-			return false;
+			return -1;
 
 		back_i = incr(back_i);
 		queue[back_i] = inst;
-		rename_table.put(inst.dest_reg_str, back_i);
+		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
 		cur_size += 1;
-		return true;
+		return back_i;
 	}
 
 	public ArrayList<Instruction> dequeue(int count)
@@ -54,7 +54,7 @@ public class ROB
 		// will this work?
 		// it needs to be cleared to avoid false positives
 		// in instruction killing
-		rename_table.remove(inst.dest_reg_str);
+		rename_table.removeRename(inst.dest_reg_original_str, inst);
 		queue[front_i] = null;
 		front_i = decr(front_i);
 		cur_size -= 1;
