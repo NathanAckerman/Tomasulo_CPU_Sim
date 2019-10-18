@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class WB
 {
@@ -18,16 +19,40 @@ public class WB
 
     public boolean isFull() 
     {
-        // I dont think the WB can ever be bottlenecked by the ROB.
-        // If the ROB does not have room, it doesnt matter to the WB
-        // as the instructions that it is attempting to give to ROB already
-        // has a reserved spot. The WB will never stall unless its maxPushSize = 0
-        
         return numPushed < maxPushSize; 
     }
 
-    public void pull(Instruction i)
+    public ArrayList<Instruction> pull(int count)
     {
+        // Grabbing candidate instructions
+        ArrayList<Instruction> readiedInstructions = new ArrayList<Instruction>();
+        for(Unit u: units){
+            Instruction[] pipeline = u.pipeline;
+            Instruction readied = pipeline[pipeline.length - 1];
+            if(readied != null){
+                readiedInstructions.add(readied);
+            }
+        }
+        Collections.sort(readiedInstructions, (a, b) -> a.issueid.compareTo(b.issueid));
+
+        ArrayList<Instruction> instructionsToPush = new ArrayList<Instruction>();
+
+        // Grabbing count instructions
+        for(int i = 0; i < count; i++){
+            Instruction instr = readiedInstructions.get(i);
+            instructionsToPush.add(instr);
+        }
+
+        // Removing instructions from pipeline
+        for(Unit u: units) {
+            Instruction instrFinished = u.pipeline[u.pipeline.length - 1];
+            if(instrFinished != null && instructionsToPush.contains(instrFinished)){
+                u.pipeline[u.pipeline.length - 1] = null;
+            }
+        }
+
+        return readiedInstructions;
+        
         //boolean CDBSuccess = CDB.push(i); ---> Please delete CDBSuccess below when we have CDB
         boolean CDBSuccess = false;
 
@@ -51,11 +76,21 @@ public class WB
     public int queryReadyInstructions()
     {
         int numReadied = 0;
-        for(Unit u: unit_arr){
-            Instruction[] pipeline = u.pipeline();
-            if(pipeline[pipeline.length - 1] != null){
+        for(Unit u: units){
+            Instruction[] pipeline = u.pipeline;
+            Instruction readied = pipeline[pipeline.length - 1];
+            if(readied != null){
                 numReadied +=1;
             }
         }
+
+        return numReadied;
     }
+
+    public class InstructionSort implements Comparator<Instruction> { 
+        public int compare(Instruction a, Instruction b) 
+        { 
+            return a.issueid - b.issueid; 
+        } 
+    } 
 }
