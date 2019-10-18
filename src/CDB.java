@@ -46,9 +46,22 @@ public class CDB
 			sim.rf.commit(inst);
 
 		ArrayList<Instruction> wb_insts = sim.wb.pull(bw_for_wb);
+
+		// putting values into reservation station instructions
 		for (Instruction inst : wb_insts) {
 			sim.rf.wb_push(inst);
-			sim.rob.complete(inst);
+
+			ArrayList<Instruction> allInstructions = ReservationStationStatusTable.getAllInstructions();
+
+			for(Instruction reservInst : allInstructions) {
+				if(reservInst.source_reg1_renamed_str != null && reservInst.source_reg1_renamed_str.equals(inst.dest_reg_renamed_str)){
+					reservInst.source_reg1_value = inst.dest_reg_value;
+				}
+
+				if(reservInst.source_reg2_renamed_str != null && reservInst.source_reg2_renamed_str.equals(inst.dest_reg_renamed_str)){
+					reservInst.source_reg2_value = inst.dest_reg_value;
+				}
+			}
 		}
 	}
 

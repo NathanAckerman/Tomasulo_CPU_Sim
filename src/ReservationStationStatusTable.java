@@ -49,5 +49,15 @@ public final class ReservationStationStatusTable {
     public static boolean isReservationStationFull(UnitName unitName) {
         return stationMap.get(unitName).size() == stationSizeMap.get(unitName).intValue();
     }
+
+    public static ArrayList<Instruction> getAllInstructions() {
+        ArrayList<Instruction> allInstructions = new ArrayList<Instruction>();
+
+        for(ArrayList<Instruction> instrList : stationMap.values()) {
+            allInstructions.addAll(instrList);
+        }
+
+        return allInstructions;
+    }
     
 }

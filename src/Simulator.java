@@ -12,7 +12,7 @@ public class Simulator
 	public RegisterFile rf = new RegisterFile(mem);
 	private CDB cdb = new CDB(4, this);
 	public ROB rob = new ROB(16);
-	private WB wb = new WB(1, units);
+	public WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem);
 	private TomRenameTable rename_table = new TomRenameTable();
