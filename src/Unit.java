@@ -2,12 +2,14 @@ public class Unit {
 
     public Instruction[] pipeline;
     private final UnitName unitName;
+    private final int latency;
 
     public Unit(int latency, int numReservStation, UnitName unitName) 
     {
         ReservationStationStatusTable.createStations(unitName, numReservStation);
         this.pipeline = new Instruction[latency];
         this.unitName = unitName;
+	this.latency = latency;
     }
 
 	/*
@@ -48,4 +50,16 @@ public class Unit {
         if (finishedInstruction != null) InstructionEvaluator.eval(finishedInstruction);
         
     }
+
+    public boolean killInstr(Instruction instr) {
+	for(int i = 0; i < latency; i++) {
+	    if (pipeline[i] == instr) {
+		pipeline[i] = null;
+		return true;
+	    }
+	}
+	return ReservationStationStatusTable.killInResStation(instr);
+    }
+
+
 }

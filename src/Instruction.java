@@ -18,6 +18,7 @@ public class Instruction
 	public Float source_reg2_value;
 	public Float dest_reg_value;
 	public boolean invalid;
+	public int issue_id;
 
 	public Instruction()
 	{

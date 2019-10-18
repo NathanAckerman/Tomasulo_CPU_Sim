@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public final class ReservationStationStatusTable {
 
@@ -48,6 +47,21 @@ public final class ReservationStationStatusTable {
 
     public static boolean isReservationStationFull(UnitName unitName) {
         return stationMap.get(unitName).size() == stationSizeMap.get(unitName).intValue();
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static boolean killInResStation(Instruction instr)
+    {
+	Iterator hm_iter = stationMap.entrySet().iterator();
+	while (hm_iter.hasNext()) {
+		Map.Entry pair = (Map.Entry)hm_iter.next();
+		ArrayList<Instruction> the_stations = (ArrayList<Instruction>)pair.getValue();
+		boolean killed_instr = the_stations.remove(instr);
+		if (killed_instr) {
+			return true;
+		}
+	}
+	return false;
     }
     
 }

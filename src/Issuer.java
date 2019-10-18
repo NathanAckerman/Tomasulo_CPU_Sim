@@ -7,6 +7,7 @@ public class Issuer {
 
 	private ArrayList<Unit> units;
 	private ROB rob;
+	private int total_issued;
 
 	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob)
 	{
@@ -15,6 +16,7 @@ public class Issuer {
 		issue_limit = issue_num;
 		units = unit_arr;
 		this.rob = rob;
+		total_issued = 0;
 	}
 
 	public boolean enqueueInstruction(Instruction instr)
@@ -40,6 +42,8 @@ public class Issuer {
 	//check if the instr at the head of this queue is runnable (has a reservation station)
 	private void issueHeadInstr() {
 		Instruction head = queue.remove();
+		head.issue_id = total_issued;
+		total_issued++;
 		UnitName unit_name = getUnitName(head);
 		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
 		rob.enqueue(head);
