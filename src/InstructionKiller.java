@@ -19,8 +19,8 @@ public class InstructionKiller {
 		}
 
 		//need to unmap the register it reserved because it was going to write into it
-		if (instr.dest_reg_str != null) {
-			sim.rename_table.removeRename(instr.dest_reg_str);
+		if (instr.dest_reg_original_str != null) {
+			sim.rename_table.removeRename(instr.dest_reg_original_str, instr);
 		}
 	}
 

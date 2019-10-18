@@ -1,25 +1,58 @@
 import java.util.HashMap;
+import java.util.LinkedList;
 public class TomRenameTable {
-	static HashMap<String, Integer> hm;
+	static HashMap<String, LinkedList<RenameEntry>> hm;
+
 
 	TomRenameTable() 
 	{
-		hm = new HashMap<String, Integer>();
+		hm = new HashMap<String, LinkedList<RenameEntry>>();
 	}
 
-	public int getRename(String reg)
+	public Integer getRename(String reg)
 	{
-		return hm.get(reg);
+		LinkedList<RenameEntry> ll = hm.get(reg);
+		if (ll == null) {
+			return null;
+		}
+		return ll.getLast().rob_index;
 	}
 
-	public void setRename(String reg, int rob_index)
+	public void setRename(String reg, int rob_index, Instruction instr)
 	{
-		hm.put(reg, rob_index);
+		LinkedList<RenameEntry> ll = hm.get(reg);
+		if (ll == null) {
+			ll.add(new RenameEntry(rob_index, instr));
+			hm.put(reg, ll);
+		} else {
+			ll.add(new RenameEntry(rob_index, instr));
+		}
 	}
 
-	public void removeRename(String reg)
+	public void removeRename(String reg, Instruction instr)
 	{
-		hm.remove(reg);
+		LinkedList<RenameEntry> ll = hm.get(reg);
+		RenameEntry el_to_remove = null;
+		for (RenameEntry rn : ll) {
+			if (rn.instr == instr) {
+				el_to_remove = rn;
+			}
+		}
+		ll.remove(el_to_remove);
+		if (ll.size() == 0) {
+			hm.remove(reg);
+		}
 	}
 
+}
+
+class RenameEntry {
+	public Integer rob_index;
+	public Instruction instr;
+
+	RenameEntry(int rob_index, Instruction instr)
+	{
+		this.rob_index = rob_index;
+		this.instr = instr;
+	}
 }

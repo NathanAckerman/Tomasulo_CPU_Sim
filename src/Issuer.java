@@ -8,8 +8,9 @@ public class Issuer {
 	private ArrayList<Unit> units;
 	private ROB rob;
 	private int total_issued;
+	private TomRenameTable rename_table;
 
-	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob)
+	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob, TomRenameTable the_rename_table)
 	{
 		queue = new LinkedList<Instruction>();
 		size_limit = size;
@@ -17,6 +18,7 @@ public class Issuer {
 		units = unit_arr;
 		this.rob = rob;
 		total_issued = 0;
+		rename_table = the_rename_table;
 	}
 
 	public boolean enqueueInstruction(Instruction instr)
@@ -45,8 +47,11 @@ public class Issuer {
 		head.issue_id = total_issued;
 		total_issued++;
 		UnitName unit_name = getUnitName(head);
+		int rob_index = rob.enqueue(head);
+		head.dest_reg_renamed_str = Integer.toString(rob_index);
+		head.source_reg1_renamed_str = Integer.toString(rename_table.getRename(head.source_reg1_original_str));
+		head.source_reg2_renamed_str = Integer.toString(rename_table.getRename(head.source_reg2_original_str));
 		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
-		rob.enqueue(head);
 	}
 
 	public boolean killInstr(Instruction instr) {
