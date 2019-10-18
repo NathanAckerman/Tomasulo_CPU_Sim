@@ -50,6 +50,7 @@ public class InstructionCache
 			get_cache_line_with_pc(pc);
 			issueInstructions();
 		}
+		pc = pc+1;
 	}
 
 	private void issueInstructions()
