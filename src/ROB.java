@@ -59,28 +59,8 @@ public class ROB
 		return inst;
 	}
 
-	public ArrayList<Instruction> peek(int count)
-	{
-		ArrayList<Instruction> arr;
-		for (int i = 0; i < count; i++)
-			arr[i] = peek();
-
-		return arr;
-	}
-
 	public int queryReadyInstructions()
 	{
-	}
-
-	public Instruction peek()
-	{
-		if (cur_size == 0)
-			return null;
-
-		Instruction inst = queue[front_i];
-		if (!inst.dest_reg_value)
-			return null;
-		return inst;
 	}
 
 	/*
