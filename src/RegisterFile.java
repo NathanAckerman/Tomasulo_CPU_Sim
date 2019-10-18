@@ -8,6 +8,13 @@ public class RegisterFile
     private HashMap<String, Integer> intRegistersRenamed = new HashMap<String, Integer>();
     private HashMap<String, Float> floatRegistersRenamed = new HashMap<String, Float>();
 
+    private Memory mem;
+
+    public RegisterFile(Memory the_mem)
+    {
+	    mem = the_mem;
+    }
+
     // Fill out the instruction with values
     public void read(Instruction i)
     {
@@ -35,11 +42,28 @@ public class RegisterFile
                 i.source_reg2_value = intRegisters[i.getSourceReg2()];
                 break;
             }
-            // non-floating point load/store
-            case "lw": case "sw": 
 
-            // floating point load/store
-            case "fld": case "fsd": break; // Need to talk about lw/sw/fld/fsd
+            // loads
+            // pretty sure floating loads still need to load their address
+            // from int registers...
+            case "ld": case "fld": {
+                i.source_reg1_value = intRegisters[i.getSourceReg1()];
+                break;
+            }
+
+            // int store
+            case "sd": {
+                i.dest_reg_value = intRegisters[i.dest_reg];
+                i.source_reg1_value = intRegisters[i.getSourceReg1()];
+                break;
+            }
+
+            // float store
+            case "fsd": {
+                i.dest_reg_value = fpRegisters[i.dest_reg];
+                i.source_reg1_value = fpRegisters[i.getSourceReg1()];
+                break;
+            }
 
             // floating point 
             case "fadd": case "fsub":
@@ -74,17 +98,23 @@ public class RegisterFile
             case "slt": case "slti":
             case "add": case "addi":
             case "sub": case "subi":
-            case "mult": {
+            case "mult": case "ld": {
                 intRegisters[i.getDestReg()] = i.dest_reg_value; // Careful of dest_reg_value type here
                 break;
             }
             case "fmult": case "fdiv":
-            case "fadd": case "fsub": {
+            case "fadd": case "fsub": case "fld": {
                 fpRegisters[i.getDestReg()] = i.dest_reg_value; // Careful of dest_reg_value type here
+                break;
             }
-
+            case "sd": {
+                mem.add_int(i.source_reg1_value + i.immediate, i.dest_reg_value);
+                break;
+            }
+            case "fsd": {
+                mem.add_float(i.source_reg1_value + i.immediate, i.dest_reg_value);
+                break;
+            }
         }
     }
-        
-
 }

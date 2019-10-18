@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public final class ReservationStationStatusTable {
 
-    private static HashMap<UnitName, ArrayList<Station>> stationMap = new HashMap<>();
+    private static HashMap<UnitName, ArrayList<Instruction>> stationMap = new HashMap<>();
     private static HashMap<UnitName, Integer> stationSizeMap = new HashMap<>();
 
     // No one can instantiate this class
@@ -14,7 +14,7 @@ public final class ReservationStationStatusTable {
         if(stationSizeMap.containsKey(unitName) || stationMap.containsKey(unitName)) return false;
 
         stationSizeMap.put(unitName, new Integer(size));
-        stationMap.put(unitName, new ArrayList<Station>());
+        stationMap.put(unitName, new ArrayList<Instruction>());
         
         return true;
     }
@@ -33,11 +33,11 @@ public final class ReservationStationStatusTable {
     // If there is a station that is ready (meaning an instruction that has all of its values), return that instruction
     // so that we can send it through the Unit
     public static Instruction getNextReadyInstruction(UnitName unitName) { 
-        ArrayList<Station> stations = stationMap.get(unitName);
+        ArrayList<Instruction> stations = stationMap.get(unitName);
 
-        for(Station s : stations){
-            if(!s.isWaitingOnValue()) return s.instruction;
-        }
+        for (Instruction i : stations)
+            if (!i.isWaitingOnValue())
+                return i;
 
         return null;
     }

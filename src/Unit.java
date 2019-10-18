@@ -1,28 +1,33 @@
-public abstract class Unit {
+public class Unit {
 
     private final int latency;
-    private Instruction[] pipeline;
-    private Instruction buffer; 
+    public Instruction[] pipeline;
     private WB wb;
+    private final UnitName unitName;
 
-    public Unit(int numReservStation, final int latency, UnitName unitName, WB wb) 
+    public Unit(int numReservStation, final int latency, UnitName unitName) 
     {
         ReservationStationStatusTable.createStations(unitName, numReservStation);
         this.latency = latency;
         this.pipeline = new Instruction[latency];
-        this.wb = wb;
+        this.unitName = unitName;
     }
 
-    public void addInstruction(Instruction i) {
-            // TODO Auto-generated method stub
-    }
-
-    public Instruction shiftPipelineRight(Instruction instruction) 
+	/*
+	 * \brief Performing one cycle of pipeline execution
+	 * \param[in] instruction Instruction to be added to the pipeline for execution
+	 * \param[in] addr2 Address of last instruction to kill
+	 *
+     * If the last cell of the pipeline is not empty, the pipeline will stall
+     * It is assumed that the CDB or the WB will pick up the instruction in the last cell
+     * of the pipeline and set that cell to null
+     * 
+     * \return true on success and fall otherwise (stalling)
+    */
+    public boolean shiftPipelineRight(Instruction instruction) 
     {
-        Instruction finishedInstruction = null;
-
         if(this.pipeline[this.pipeline.length - 1] != null) {
-            finishedInstruction = this.pipeline[this.latency - 1];
+            return false; // stalling
         }
 
         for(int i = pipeline.length - 1; i > 0; i--){
@@ -31,27 +36,20 @@ public abstract class Unit {
 
         this.pipeline[0] = instruction;
 
-        return finishedInstruction;
+        return true;
     }
 
-    public boolean shouldStall()
-    {
-        return this.pipeline[this.pipeline.length - 1] != null && this.buffer != null && wb.isFull();
-    }
+    public void doCycle(){
+        Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(this.unitName);
 
-    public void moveToWBOrBuffer(Instruction i)
-    {
-        if(!wb.isFull()) {
-            if(this.buffer != null){
-                wb.push(this.buffer);
-                this.buffer = i;
-            }else if(i != null){
-                wb.push(i);
-            }
-        }else{
-            this.buffer = i;
+        boolean shouldStall = shiftPipelineRight(readyInstruction);
+        if(shouldStall) {
+            System.out.println(this.unitName + " is stalling");
+            return;
         }
-    }
 
-    public abstract void doCycle();
+        Instruction finishedInstruction = this.pipeline[this.pipeline.length - 1];
+        if (finishedInstruction != null) InstructionEvaluator.eval(finishedInstruction);
+        
+    }
 }

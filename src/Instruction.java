@@ -5,12 +5,15 @@ public class Instruction
 	public int source_reg1;
 	public int source_reg2;
 	public int dest_reg;
+	public String source_reg1_str;
+	public String source_reg2_str;
+	public String dest_reg_str;
 	public int immediate;
 	public int target;
 	public int predicted_target;
-	public Double source_reg1_value;
-	public Double source_reg2_value;
-	public Double dest_reg_value;
+	public Float source_reg1_value;
+	public Float source_reg2_value;
+	public Float dest_reg_value;
 	public boolean invalid;
 
 	public Instruction()
@@ -57,5 +60,10 @@ public class Instruction
 		result += "immediate: " + Integer.toString(this.immediate) +"\n";
 		result += "target: " + Integer.toString(this.target) +"\n";
 		return result;
+	}
+
+	public boolean isWaitingOnValue()
+	{
+		return source_reg1_value == null || source_reg2_value == null;
 	}
 }
