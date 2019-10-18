@@ -13,7 +13,7 @@ public class WB
         // this.rob = rob;
         this.maxPushSize = maxPushSize;
         this.numPushed = 0;
-        this.units = unit_arr
+        this.units = unit_arr;
     }
 
     public boolean isFull() 
@@ -26,7 +26,7 @@ public class WB
         return numPushed < maxPushSize; 
     }
 
-    public void push(Instruction i)
+    public void pull(Instruction i)
     {
         //boolean CDBSuccess = CDB.push(i); ---> Please delete CDBSuccess below when we have CDB
         boolean CDBSuccess = false;
@@ -50,5 +50,12 @@ public class WB
 
     public int queryReadyInstructions()
     {
+        int numReadied = 0;
+        for(Unit u: unit_arr){
+            Instruction[] pipeline = u.pipeline();
+            if(pipeline[pipeline.length - 1] != null){
+                numReadied +=1;
+            }
+        }
     }
 }
