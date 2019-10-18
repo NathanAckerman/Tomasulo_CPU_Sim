@@ -104,12 +104,14 @@ public class ROB
 		for (int i = i1; i != (i2 == -1 ? back_i : i2); i = incr(i)) {
 			if (queue[i] != null) {
 				instr_killer.killInstructionAnywhere(queue[i]);
+				rename_table.removeRename(inst.dest_reg_original_str, queue[i]);
 			}
 			queue[i] = null;
 			num_killed++;
 		}
 		if (queue[i] != null) {
 			instr_killer.killInstructionAnywhere(queue[i]);
+			rename_table.removeRename(inst.dest_reg_original_str, queue[i]);
 		}
 		queue[i] = null;
 		num_killed++;
