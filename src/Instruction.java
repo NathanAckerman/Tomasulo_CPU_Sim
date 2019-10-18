@@ -5,9 +5,12 @@ public class Instruction
 	public int source_reg1;
 	public int source_reg2;
 	public int dest_reg;
-	public String source_reg1_str;
-	public String source_reg2_str;
-	public String dest_reg_str;
+	public String dest_reg_original_str;
+	public String source_reg1_original_str;
+	public String source_reg2_original_str;
+	public String dest_reg_renamed_str;
+	public String source_reg1_renamed_str;
+	public String source_reg2_renamed_str;
 	public int immediate;
 	public int target;
 	public int predicted_target;
@@ -59,11 +62,14 @@ public class Instruction
 		result += "dest_reg: " + Integer.toString(this.dest_reg) +"\n";
 		result += "immediate: " + Integer.toString(this.immediate) +"\n";
 		result += "target: " + Integer.toString(this.target) +"\n";
+		result += "dest_reg_original_str:" + dest_reg_original_str + "\n";
+		result += "source_reg1_original_str:" + source_reg1_original_str + "\n";
+		result += "source_reg2_original_str:" + source_reg2_original_str + "\n";
 		return result;
 	}
 
 	public boolean isWaitingOnValue()
 	{
-		return source_reg1_value == null || source_reg2_value == null;
+		return source_reg1_value == null || (source_reg2_value == null && immediate == -1);
 	}
 }

@@ -1,14 +1,11 @@
 public class Unit {
 
-    private final int latency;
     public Instruction[] pipeline;
-    private WB wb;
     private final UnitName unitName;
 
-    public Unit(final int latency, int numReservStation, UnitName unitName) 
+    public Unit(int latency, int numReservStation, UnitName unitName) 
     {
         ReservationStationStatusTable.createStations(unitName, numReservStation);
-        this.latency = latency;
         this.pipeline = new Instruction[latency];
         this.unitName = unitName;
     }
@@ -16,7 +13,6 @@ public class Unit {
 	/*
 	 * \brief Performing one cycle of pipeline execution
 	 * \param[in] instruction Instruction to be added to the pipeline for execution
-	 * \param[in] addr2 Address of last instruction to kill
 	 *
      * If the last cell of the pipeline is not empty, the pipeline will stall
      * It is assumed that the CDB or the WB will pick up the instruction in the last cell
