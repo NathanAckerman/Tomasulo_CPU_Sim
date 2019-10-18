@@ -75,7 +75,7 @@ public class Issuer {
 		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
 	}
 
-	public boolean killInstr() {
+	public void killInstr() {
 		queue.clear();
 	}
 
@@ -105,11 +105,12 @@ public class Issuer {
 			case "beq":
 			case "bne":
 				return UnitName.BU;
-			case "lw":
-			case "sw":
+			case "ld":
 			case "fld":
+			      return UnitName.LOAD;
+			case "sd":
 			case "fsd":
-			      return UnitName.LOADSTORE;
+			      return UnitName.STORE;
 		}
 		System.out.println("unit name translation failed. should never see this.");
 		System.exit(1);

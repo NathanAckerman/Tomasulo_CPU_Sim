@@ -11,7 +11,9 @@ public class InstructionKiller {
 		//TODO what is going on with the buffers for wb?
 		
 		//find and kill the instruction if in units
-		boolean killed_in_units = sim.units.killInstr(instr);
+		boolean killed_in_units = false; 
+		for (Unit u : sim.units)
+			killed_in_units = killed_in_units || u.killInstr(instr);
 		
 		//find and kill the instruction if in the issuer
 		if (!killed_in_units) {

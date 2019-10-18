@@ -8,7 +8,7 @@ public class InstructionCache
 	private final int BASE_ADDR = 1000;
 	private Instruction[] cache_line;
 	private int num_instr_in_left_unissued;
-	private Issuer issuer;
+	public Issuer issuer;
 	private Integer pc;
 	public Integer next_pc;
 

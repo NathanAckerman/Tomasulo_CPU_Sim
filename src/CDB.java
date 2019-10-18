@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.lang.Math;
 
 public class CDB
 {
@@ -18,8 +20,8 @@ public class CDB
 		int rob_num_ready = sim.rob.queryReadyInstructions();
 		int wb_num_ready = sim.wb.queryReadyInstructions();
 
-		int bw_for_rob = min(rob_num_ready, min_rob_bw);
-		int bw_for_wb  = min(wb_num_ready, NUM_BUSES - bw_for_rob);
+		int bw_for_rob = Math.min(rob_num_ready, min_rob_bw);
+		int bw_for_wb  = Math.min(wb_num_ready, NUM_BUSES - bw_for_rob);
 		int consumed_bw = bw_for_rob + bw_for_wb;
 
 		if (NUM_BUSES > consumed_bw) {
@@ -28,14 +30,14 @@ public class CDB
 			int rem_wb = wb_num_ready - bw_for_wb;
 
 			if (rem_rob > 0) {
-				int incr = min(rem_bw, rem_rob);
+				int incr = Math.min(rem_bw, rem_rob);
 				bw_for_rob += incr;
 				consumed_bw += incr;
 				rem_bw = NUM_BUSES - consumed_bw;
 			}
 
 			if (rem_bw > 0 && rem_wb > 0) {
-				int incr = min(rem_bw, rem_wb);
+				int incr = Math.min(rem_bw, rem_wb);
 				bw_for_wb += incr;
 				consumed_bw += incr;
 			}
@@ -76,14 +78,6 @@ public class CDB
 			return false;
 
 		return bus.add(inst);
-	}
-
-	// TODO mapping of register names
-	public Double pullResult(String registerName)
-	{
-		for (Instruction inst : bus)
-			if (registerNameMatch(inst, registerName))
-				return inst.dest_reg_value;
 	}
 
 	public boolean isFull()	{ return bus.size() >= NUM_BUSES; }

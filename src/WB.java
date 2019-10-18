@@ -30,7 +30,7 @@ public class WB
                 readiedInstructions.add(readied);
             }
         }
-        Collections.sort(readiedInstructions, (a, b) -> a.issueid.compareTo(b.issueid));
+        Collections.sort(readiedInstructions, (a, b) -> a.issue_id - b.issue_id);
 
         ArrayList<Instruction> instructionsToPush = new ArrayList<Instruction>();
 
@@ -75,11 +75,4 @@ public class WB
 
         return numReadied;
     }
-
-    public class InstructionSort implements Comparator<Instruction> { 
-        public int compare(Instruction a, Instruction b) 
-        { 
-            return a.issueid - b.issueid; 
-        } 
-    } 
 }

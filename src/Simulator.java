@@ -6,11 +6,11 @@ public class Simulator
 	private int cycle;
 	private Integer pc = 1000;
 
-	private ArrayList<Unit> units = new ArrayList<Unit>();
+	public ArrayList<Unit> units = new ArrayList<Unit>();
 
 	// TODO parameterize these
 	public TomRenameTable rename_table = new TomRenameTable();
-	private Memory mem = new Memory();
+	public Memory mem = new Memory();
 	public RegisterFile rf = new RegisterFile(mem);
 	private CDB cdb = new CDB(4, this);
 	private InstructionKiller instr_killer = new InstructionKiller(this);
@@ -20,7 +20,7 @@ public class Simulator
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem, pc);
 	private InstructionCache instruction_cache;
 
-	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table, instruction_cache, btb);
+	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table, instruction_cache, btb, rf);
 
 	public Simulator()
 	{
@@ -41,9 +41,8 @@ public class Simulator
 
 		// TODO parameterize this
 		// this also does wb and rob
-		int cdb_bw = 4;
 		int min_rob_bw = 2;
-		cdb.doCycle(cdb_bw, min_rob_bw);
+		cdb.doCycle(min_rob_bw);
 
 		// TODO move items from wb to cdb
 
@@ -80,13 +79,15 @@ public class Simulator
 			throw new IllegalArgumentException("No test file passed to the simulator!");
 		} else if (args.length == 1) {
 			String filepath = args[0];
-			InstructionCache instruction_cache = new InstructionCache(Issuer, pc);
-			this.instruction_cache = instruction_cache;
-			this.instruction_cache.issuer = this.issuer;
-			Memory memory = new Memory();
+
+			Simulator simulator = new Simulator();
+
+			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc);
+			simulator.instruction_cache = instruction_cache;
+			simulator.instruction_cache.issuer = simulator.issuer;
+			Memory memory = simulator.mem;
 
 			Parser.parseFile(filepath, instruction_cache, memory);
-			Simulator simulator = new Simulator();
 			simulator.run(instruction_cache, memory);
 
 			System.out.println(instruction_cache.toString());
@@ -105,22 +106,22 @@ public class Simulator
 			Memory memory = new Memory();
 
 			// Create new instruction cache object for filepath_1
-			InstructionCache instruction_cache_1 = new InstructionCache();
+			//InstructionCache instruction_cache_1 = new InstructionCache();
 
 			// Parse file_1 and fill the instruction cache and memory
-			Parser.parseFile(filepath_1, instruction_cache_1, memory);
+			//Parser.parseFile(filepath_1, instruction_cache_1, memory);
 
 			// Create new instruction cache object for filepath_2
-			InstructionCache instruction_cache_2 = new InstructionCache();
+			//InstructionCache instruction_cache_2 = new InstructionCache();
 
 			// Parse file_2 and fill the instruction cache and memory
-			Parser.parseFile(filepath_2, instruction_cache_2, memory);
+			//Parser.parseFile(filepath_2, instruction_cache_2, memory);
 
 			// Print Instruction Cache 1
-			System.out.println(instruction_cache_1.toString());
+			//System.out.println(instruction_cache_1.toString());
 
 			// Print Instruction Cache 2
-			System.out.println(instruction_cache_2.toString());
+			//System.out.println(instruction_cache_2.toString());
 
 			// Print Registers
 			

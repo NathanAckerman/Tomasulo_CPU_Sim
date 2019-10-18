@@ -40,8 +40,8 @@ public class Unit {
     public void doCycle(){
         Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(this.unitName);
 
-        boolean shouldStall = shiftPipelineRight(readyInstruction);
-        if(shouldStall) {
+        boolean succeeded = shiftPipelineRight(readyInstruction);
+        if(!succeeded) {
             System.out.println(this.unitName + " is stalling");
             return;
         }
@@ -51,6 +51,7 @@ public class Unit {
         
     }
 
+    // return true if instruction killed
     public boolean killInstr(Instruction instr) {
 	for(int i = 0; i < latency; i++) {
 	    if (pipeline[i] == instr) {

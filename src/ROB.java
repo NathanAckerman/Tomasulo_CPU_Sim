@@ -28,7 +28,7 @@ public class ROB
 			return -1;
 
 		back_i = incr(back_i);
-		queue[back_i] = inst;
+		queue.set(back_i, inst);
 		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
 		cur_size += 1;
 		return back_i;
@@ -36,12 +36,12 @@ public class ROB
 
 	public ArrayList<Instruction> dequeue(int count)
 	{
-		ArrayList<Instruction> arr;
+		ArrayList<Instruction> arr = new ArrayList<Instruction>();
 		for (int i = 0; i < count; i++) {
 			Instruction inst = dequeue();
 			if (inst == null)
 				break;
-			arr[i] = inst;
+			arr.set(i, inst);
 		}
 
 		return arr;
@@ -52,14 +52,11 @@ public class ROB
 		if (cur_size == 0)
 			return null;
 
-		Instruction inst = queue[front_i];
+		Instruction inst = queue.get(front_i);
 		if (!inst.completed)
 			return null;
-		// will this work?
-		// it needs to be cleared to avoid false positives
-		// in instruction killing
 		rename_table.removeRename(inst.dest_reg_original_str, inst);
-		queue[front_i] = null;
+		queue.set(front_i, null);
 		front_i = decr(front_i);
 		cur_size -= 1;
 		return inst;
@@ -68,11 +65,13 @@ public class ROB
 	public int queryReadyInstructions()
 	{
 		int count = 0;
-		for (int i = front_i, int c = 0; c < cur_size; i = incr(i), c++) {
-			if (queue[i].completed)
+		int c = 0;
+		for (int i = front_i; c < cur_size; i = incr(i)) {
+			if (queue.get(i).completed)
 				count++;
 			else
 				break;
+			c++;
 		}
 
 		return count;
@@ -98,19 +97,20 @@ public class ROB
 			return;
 
 		int num_killed = 0;
-		for (int i = i1; i != (i2 == -1 ? back_i : i2); i = incr(i)) {
-			if (queue[i] != null) {
-				instr_killer.killInstructionAnywhere(queue[i]);
-				rename_table.removeRename(inst.dest_reg_original_str, queue[i]);
+		int i;
+		for (i = i1; i != (i2 == -1 ? back_i : i2); i = incr(i)) {
+			if (queue.get(i) != null) {
+				instr_killer.killInstructionAnywhere(queue.get(i));
+				rename_table.removeRename(queue.get(i).dest_reg_original_str, queue.get(i));
 			}
-			queue[i] = null;
+			queue.set(i, null);
 			num_killed++;
 		}
-		if (queue[i] != null) {
-			instr_killer.killInstructionAnywhere(queue[i]);
-			rename_table.removeRename(inst.dest_reg_original_str, queue[i]);
+		if (queue.get(i) != null) {
+			instr_killer.killInstructionAnywhere(queue.get(i));
+			rename_table.removeRename(queue.get(i).dest_reg_original_str, queue.get(i));
 		}
-		queue[i] = null;
+		queue.set(i, null);
 		num_killed++;
 
 		cur_size -= num_killed;
