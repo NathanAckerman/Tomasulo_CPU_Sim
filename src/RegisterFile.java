@@ -1,4 +1,4 @@
-import java.util.HashMap;
+import java.util.*;
 
 public class RegisterFile
 {
@@ -36,7 +36,8 @@ public class RegisterFile
             case "subi": case "sd": 
             case "ld": {
                 if(!setIntFirstRegisterValue(i)) {
-                    System.out.println(i.toString() + "produced an error");
+                    System.out.println(i.toString() + "produced an error 1");
+		    System.exit(1);
                 }
 
                 break;
@@ -47,7 +48,8 @@ public class RegisterFile
             case "add": case "mult":
             case "sub": {
                 if(!setIntFirstRegisterValue(i) || !setIntSecondRegisterValue(i)) {
-                    System.out.println(i.toString() + "produced an error");      
+                    System.out.println(i.toString() + "produced an error 2");      
+		    System.exit(1);
                 } 
 
                 break;
@@ -60,7 +62,8 @@ public class RegisterFile
                 // I.E., beq R1, R2, loop is invalid but beq R1, $5, loop is valid
                 // Assumptions: BEQ takes in only integer registers followed by one immediate
                 if(!setFPFirstRegisterValue(i)) {
-                    System.out.println(i.toString() + "produced an error");
+                    System.out.println(i.toString() + "produced an error 3");
+		    System.exit(1);
                 }
 
                 break;
@@ -70,18 +73,22 @@ public class RegisterFile
             case "fadd": case "fsub":
             case "fmult": case "fdiv": {
                 if(!setFPFirstRegisterValue(i) || !setFPSecondRegisterValue(i)) {
-                    System.out.println(i.toString() + "produced an error");      
+                    System.out.println(i.toString() + "produced an error 4");      
+		    System.exit(1);
                 }  
                 break;
             }
 
             default: 
                 System.out.println("Opcode " + opcode + " is either invalid or has not been considered");
+		System.exit(1);
         }
     }
 
     public boolean commit(Instruction i) {
 
+	System.out.println("Committing instruction:");
+	System.out.println(i);
         String opcode = i.getOpcode();
 
         switch (opcode) {
@@ -245,4 +252,27 @@ public class RegisterFile
         return true;
         
     }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void printRegisters()
+    {
+	Iterator hm_iter2 = intRegisters.entrySet().iterator();
+	while (hm_iter2.hasNext()) {
+		Map.Entry pair = (Map.Entry)hm_iter2.next();
+		int int_val = (int)pair.getValue();
+		String int_reg = (String)pair.getKey();
+		System.out.println("Reg: "+int_reg+"    val: "+Integer.toString(int_val));
+	}
+
+	Iterator hm_iter = fpRegisters.entrySet().iterator();
+	while (hm_iter.hasNext()) {
+		Map.Entry pair = (Map.Entry)hm_iter.next();
+		Float f_val = (float)pair.getValue();
+		String f_reg = (String)pair.getKey();
+		System.out.println("Reg: "+f_reg+"    val: "+Float.toString(f_val));
+	}
+    }
+
+
+
 }

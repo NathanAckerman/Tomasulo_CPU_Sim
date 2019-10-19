@@ -78,6 +78,8 @@ public class Simulator
 
 		System.out.println("Sim Ending at cycle: "+this.cycle);
 
+		this.rf.printRegisters();
+
 	}
 
 	public boolean SimulationDone()
