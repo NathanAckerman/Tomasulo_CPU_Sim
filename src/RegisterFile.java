@@ -5,14 +5,14 @@ public class RegisterFile
     private HashMap<String, Integer> intRegisters = new HashMap<String, Integer>() {{
         // Pre-populating
         for(int i = 0; i < 32; i++) {
-            put("R" + i, null);
+            put("R" + i, new Integer(0));
         }
     }};
 
     private HashMap<String, Float> fpRegisters = new HashMap<String, Float>() {{
         // Pre-populating
         for(int i = 0; i < 32; i++) {
-            put("F" + i, null);
+            put("F" + i, new Float(0));
         }
     }};
 

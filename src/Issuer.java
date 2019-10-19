@@ -45,7 +45,7 @@ public class Issuer {
 	public void doCycle()
 	{
 		int num_issued = 0;
-		while (queue.size() >= 0 && num_issued < issue_limit && !rob.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))) {
+		while (queue.size() > 0 && num_issued < issue_limit && !rob.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))) {
 			issueHeadInstr();	
 			num_issued++;
 		}
@@ -122,6 +122,11 @@ public class Issuer {
 	public int getEmptySpots()
 	{
 		return size_limit - queue.size();
+	}
+
+	public int getNumEntries()
+	{
+		return queue.size();
 	}
 
 
