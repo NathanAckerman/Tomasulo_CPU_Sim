@@ -34,7 +34,7 @@ public class RegisterFile
             case "andi": case "ori":
             case "slti": case "addi":
             case "subi": case "sd": 
-            case "ld": {
+            case "ld": case "fld": {
                 if(!setIntFirstRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 1");
 		    System.exit(1);
@@ -55,7 +55,7 @@ public class RegisterFile
                 break;
             }
 
-            case "fld": case "fsd":
+            case "fsd":
             case "beq": case "bne": {
                 // NOTE FOR BRANCHES: 
                 // Parser is set up in such a way that it is always comparing a register to a value. 
