@@ -10,19 +10,17 @@ public class ROB
 	private TomRenameTable rename_table;
 	private InstructionKiller instr_killer;
 
-	private ArrayList<Instruction> queue = new ArrayList<Instruction>();
+	private Instruction[] queue;
 
 	public ROB(final int size, TomRenameTable table, InstructionKiller the_instr_killer)
 	{
 		ROB_SIZE = size;
 		cur_size = 0;
 		front_i = 0;
-		back_i = ROB_SIZE - 1;
+		back_i = 0;
 		rename_table = table;
 		instr_killer = the_instr_killer;
-		for (int i = 0; i < size; i++) {
-			queue.add(null);
-		}
+		queue = new Instruction[16];
 	}
 
 	public int enqueue(Instruction inst)
@@ -30,11 +28,14 @@ public class ROB
 		if (isFull()) {
 			return -1;
 		}
-		back_i = incr(back_i);
-		queue.set(back_i, inst);
+
 		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
+		queue[back_i] = inst;
+		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
+		int index_in_rob = back_i;
+		back_i = incr(back_i);
 		cur_size += 1;
-		return back_i;
+		return index_in_rob;
 	}
 
 	public ArrayList<Instruction> dequeue(int count)
@@ -44,7 +45,7 @@ public class ROB
 			Instruction inst = dequeue();
 			if (inst == null)
 				break;
-			arr.set(i, inst);
+			arr.add(inst);
 		}
 
 		return arr;
@@ -55,25 +56,35 @@ public class ROB
 		if (cur_size == 0)
 			return null;
 
-		Instruction inst = queue.get(front_i);
+		Instruction inst = queue[front_i];
 		if (!inst.completed)
 			return null;
 		rename_table.removeRename(inst.dest_reg_original_str, inst);
-		queue.set(front_i, null);
-		front_i = decr(front_i);
+		queue[front_i] = null;
+		front_i = incr(front_i);
 		cur_size -= 1;
 		return inst;
 	}
 
 	public int queryReadyInstructions()
 	{
+		System.out.println("querying ready instructions: printing rob instrs");
+		int a = 0;
+		for (int i = front_i; a < cur_size; i = incr(i)) {
+			System.out.println(queue[i]);
+			a++;
+		}
 		int count = 0;
 		int c = 0;
-		for (int i = front_i; c < cur_size; i = incr(i)) {
-			if (queue.get(i).completed)
+		for (int i = front_i; i < cur_size; i = incr(i)) {
+			if(queue[i] == null){
+				continue;
+			}
+			if (queue[i].completed){
 				count++;
-			else
+			} else {
 				break;
+			}
 			c++;
 		}
 
@@ -91,6 +102,7 @@ public class ROB
 	 * queue will be killed. If either i1 or i2 are greater than the size
 	 * of the queue, then nothing is removed.
 	 */
+	/*
 	public void killInstructionsBetween(int i1, int i2)
 	{
 		if (i1 >= ROB_SIZE || i2 >= ROB_SIZE)
@@ -102,22 +114,43 @@ public class ROB
 		int num_killed = 0;
 		int i;
 		for (i = i1; i != (i2 == -1 ? back_i : i2); i = incr(i)) {
-			if (queue.get(i) != null) {
-				instr_killer.killInstructionAnywhere(queue.get(i));
-				rename_table.removeRename(queue.get(i).dest_reg_original_str, queue.get(i));
+			if (queue[i] != null) {
+				instr_killer.killInstructionAnywhere(queue[i]);
+				rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
 			}
-			queue.set(i, null);
+			queue[i] = null;
 			num_killed++;
 		}
-		if (queue.get(i) != null) {
-			instr_killer.killInstructionAnywhere(queue.get(i));
-			rename_table.removeRename(queue.get(i).dest_reg_original_str, queue.get(i));
+		if (queue[i] != null) {
+			instr_killer.killInstructionAnywhere(queue[i]);
+			rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
 		}
-		queue.set(i, null);
+		queue[i] = null;
 		num_killed++;
 
 		cur_size -= num_killed;
 		back_i = incr(i);
+	}
+*/
+	public void killInstructionsAfter(Instruction instr)
+	{
+		int num_killed = 0;
+		boolean killing = false;
+		for (int i = front_i; i < cur_size; incr(i)) {
+			if (queue[i] != null) {
+				if (queue[i] == instr) {
+					killing = true;	
+				}
+				if (killing) {
+					instr_killer.killInstructionAnywhere(queue[i]);
+					rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
+					queue[i] = null;
+					num_killed++;
+				}
+			}
+		}
+		cur_size -= num_killed;
+		front_i = front_i + num_killed % ROB_SIZE;
 	}
 
 	public boolean isFull() { return cur_size == ROB_SIZE; }

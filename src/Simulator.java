@@ -71,12 +71,19 @@ public class Simulator
 
 		run_cycle();
 		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
 
-
+/*
 		while(!SimulationDone()) {
 			run_cycle();
 		}
-
+*/
 
 
 		System.out.println("Sim Ending at cycle: "+this.cycle);
@@ -87,6 +94,8 @@ public class Simulator
 
 	public boolean SimulationDone()
 	{
+		System.out.println(this.rob.getNumEntries());
+		System.out.println(this.issuer.getNumEntries());
 		return this.rob.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
 	}
 

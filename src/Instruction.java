@@ -70,9 +70,10 @@ public class Instruction
 		result += "source_reg2_original_str:" + source_reg2_original_str + "\n";
 		result += "source_reg1_rename_str:" + source_reg1_renamed_str + "\n";
 		result += "source_reg2_original_str:" + source_reg2_renamed_str + "\n";
-		result += "dest_value" + dest_reg_value + "\n";
-		result += "source_reg1_value" + source_reg1_value + "\n";
+		result += "dest_value: " + dest_reg_value + "\n";
+		result += "source_reg1_value:" + source_reg1_value + "\n";
 		result += "source_reg2_value:" + source_reg2_value + "\n";
+		result += "completed: " + completed + "\n";
 		return result;
 	}
 

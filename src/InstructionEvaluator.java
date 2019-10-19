@@ -90,13 +90,13 @@ public class InstructionEvaluator {
 				boolean condition_val = (instr.source_reg1_value == instr.immediate);
 				if (condition_val && instr.predicted_target != instr.target) {//predicted not taken but was
 					// TODO get ROB index
-					rob.killInstructionsBetween(instr.address, 0);
+					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.target, true);
 					pc = instr.target;
 				}
 				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					// TODO get ROB index
-					rob.killInstructionsBetween(instr.address, 0);
+					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
 					pc = instr.address+1;
 				}
@@ -106,13 +106,13 @@ public class InstructionEvaluator {
 				boolean condition_val2 = (instr.source_reg1_value != instr.immediate);
 				if (condition_val2 && instr.predicted_target != instr.target) {//predicted not taken but was
 					// TODO get ROB index
-					rob.killInstructionsBetween(instr.address, 0);
+					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.target, true);
 					pc = instr.target;
 				}
 				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					// TODO get ROB index
-					rob.killInstructionsBetween(instr.address, 0);
+					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
 					pc = instr.address+1;
 				}

@@ -33,9 +33,8 @@ public class RegisterFile
         switch (opcode) {
             case "andi": case "ori":
             case "slti": case "addi":
-            case "subi": case "sd": 
-            case "ld": case "fld":
-            case "fsd": case "beq":
+            case "subi": case "ld":
+            case "fld": case "beq":
             case "bne": {
                 if(!setIntFirstRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 1");
@@ -43,6 +42,19 @@ public class RegisterFile
                 }
 
                 break;
+            }
+            case "fsd" : case "fd":
+            {
+                if(intRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
+                    i.dest_reg_value = intRegistersRenamed.get(i.dest_reg_renamed_str).floatValue();
+                    break;
+                }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
+                    i.dest_reg_value = intRegisters.get(i.dest_reg_original_str).floatValue();
+                    break;
+                }else{
+                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.exit(1);
+                }
             }
 
             // int non-immediate
