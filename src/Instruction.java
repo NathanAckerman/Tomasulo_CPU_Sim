@@ -78,6 +78,71 @@ public class Instruction
 
 	public boolean isWaitingOnValue()
 	{
-		return (source_reg1_value == null && immediate == -1 )|| (source_reg2_value == null && immediate == -1);
+		switch (opcode) {
+			case "and":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "andi":
+				return source_reg1_value == null;
+
+			case "or":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "ori":
+				return source_reg1_value == null;
+
+			case "slt":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "slti":
+				return source_reg1_value == null;
+
+			case "add":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "addi":
+				return source_reg1_value == null;
+
+			case "sub":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "subi":
+				return source_reg1_value == null;
+
+			case "mul":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "fmul":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "fadd":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "fsub":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "fdiv":
+				return (source_reg1_value == null || source_reg2_value == null);
+
+			case "ld":
+				return source_reg1_value == null;
+
+			case "fld":
+				return source_reg1_value == null;
+
+			case "beq":
+				return source_reg1_value == null;
+
+			case "bne":
+				return source_reg1_value == null;
+
+			case "sd": case "fsd":
+				return (source_reg1_value == null || dest_reg_value == null);
+
+			default:
+				System.out.println("Invalid opcode");
+				System.exit(1);
+				return true;
+		}
 	}
 }

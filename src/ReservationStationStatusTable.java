@@ -35,10 +35,12 @@ public final class ReservationStationStatusTable {
     public static Instruction getNextReadyInstruction(UnitName unitName) { 
         ArrayList<Instruction> stations = stationMap.get(unitName);
 
-        for (Instruction i : stations)
-            if (!i.isWaitingOnValue())
+        for (Instruction i : stations) {
+            if (!i.isWaitingOnValue()) {
+                stations.remove(i);
                 return i;
-
+            }
+        }
         return null;
     }
 

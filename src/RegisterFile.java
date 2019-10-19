@@ -108,17 +108,17 @@ public class RegisterFile
                 return CommitToFPRegisters(i);
             }
             case "sd": {
-                mem.add_int(i.source_reg1_value.intValue() + i.immediate, i.dest_reg_value.intValue());
+                mem.add_int(i.dest_reg_value.intValue() + i.immediate, i.source_reg1_value.intValue());
                 return true;
             }
             case "fsd": {
-                mem.add_float(i.source_reg1_value.intValue() + i.immediate, i.dest_reg_value.intValue());
-                return false;
+                mem.add_float(i.dest_reg_value.intValue() + i.immediate, i.source_reg1_value.intValue());
+                return true;
             }
             default: {
                 System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
                 System.out.println("Error happened with instruction detail:\n" + i.toString());
-		System.exit(1);
+		        System.exit(1);
                 return false;
             }
         }
