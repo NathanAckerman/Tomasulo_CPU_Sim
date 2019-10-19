@@ -63,6 +63,7 @@ public class InstructionCache
 
 	private void issueInstructions()
 	{
+		//printCacheLine();
 		int num_spots_in_issuer = issuer.getEmptySpots();
 		boolean issuing = false;
 		int num_sent = 0;
@@ -74,11 +75,22 @@ public class InstructionCache
 				issuing = true;
 			}
 			if (issuing) {
+				if (instr == null) {
+					break;
+				}
 				if (issuer.enqueueInstruction(cloneInstruction(instr))) {
 					num_sent++;
 				}
 				
 			}
+		}
+	}
+
+	private void printCacheLine()
+	{
+		for (Instruction instr : cache_line)
+		{
+			System.out.println(instr);
 		}
 	}
 
@@ -133,7 +145,7 @@ public class InstructionCache
 	}
 
 
-
+/*
 	//okay so because java is a garbage language there is no good way to deep copy an object
 	private Instruction cloneInstruction(Instruction orig_instr)
 	{
@@ -155,6 +167,24 @@ public class InstructionCache
 			System.out.println("serialization for instr copy didn't work\n");
 			System.exit(1);
 		}
+		return new_instr;
+	}
+*/
+	private Instruction cloneInstruction(Instruction orig_instr)
+	{
+		Instruction new_instr = new Instruction();
+		
+		new_instr.address = orig_instr.address;
+		new_instr.opcode = orig_instr.opcode;
+		new_instr.source_reg1 = orig_instr.source_reg1;
+		new_instr.source_reg2 = orig_instr.source_reg2;
+		new_instr.dest_reg = orig_instr.dest_reg;
+		new_instr.dest_reg_original_str = orig_instr.dest_reg_original_str;
+		new_instr.source_reg1_original_str = orig_instr.source_reg1_original_str;
+		new_instr.source_reg2_original_str = orig_instr.source_reg2_original_str;
+		new_instr.immediate = orig_instr.immediate;
+		new_instr.target = orig_instr.target;
+		new_instr.predicted_target = orig_instr.predicted_target;
 		return new_instr;
 	}
 

@@ -50,9 +50,8 @@ public class Simulator
 		for (Unit unit : units)
 			unit.doCycle();
 
-		// TODO issue instruction
 		issuer.doCycle();
-		// TODO BTB
+		instruction_cache.doCycle();
 
 		// - needs to be primed for the first cycle of the simluation
 
