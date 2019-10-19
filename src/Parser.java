@@ -144,14 +144,16 @@ public class Parser
 						instruction.setImmediate(Integer.parseInt(splitted[1].split("\\(")[0]));
 						instruction.setSourceReg1(Integer.parseInt(splitted[1].split("\\(")[1].split("")[1]));
 						instruction.dest_reg_original_str = splitted[0];
-						instruction.source_reg1_original_str = splitted[1].split("\\(")[1];
+						String s_reg1 =  splitted[1].split("\\(")[1];
+						instruction.source_reg1_original_str = s_reg1.substring(0, s_reg1.length()-1);
 					}
 					else if (instruction.getOpcode().equals("sd"))
 					{
 						instruction.setSourceReg1(Integer.parseInt(splitted[0].split("")[1]));
 						instruction.setImmediate(Integer.parseInt(splitted[1].split("\\(")[0]));
 						instruction.setDestReg(Integer.parseInt(splitted[1].split("\\(")[1].split("")[1]));
-						instruction.dest_reg_original_str = splitted[1].split("\\(")[1];
+						String s_dest = splitted[1].split("\\(")[1];
+						instruction.dest_reg_original_str = s_dest.substring(0, s_dest.length()-1);
 						instruction.source_reg1_original_str = splitted[0];
 					}
 					else if (instruction.getOpcode().equals("fld"))
@@ -160,14 +162,16 @@ public class Parser
 						instruction.setImmediate(Integer.parseInt(splitted[1].split("\\(")[0]));
 						instruction.setSourceReg1(Integer.parseInt(splitted[1].split("\\(")[1].split("")[1]));
 						instruction.dest_reg_original_str = splitted[0];
-						instruction.source_reg1_original_str = splitted[1].split("\\(")[1];
+						String s_reg1 =  splitted[1].split("\\(")[1];
+						instruction.source_reg1_original_str = s_reg1.substring(0, s_reg1.length()-1);
 					}
 					else if (instruction.getOpcode().equals("fsd"))
 					{
 						instruction.setSourceReg1(Integer.parseInt(splitted[0].split("")[1]));
 						instruction.setImmediate(Integer.parseInt(splitted[1].split("\\(")[0]));
 						instruction.setDestReg(Integer.parseInt(splitted[1].split("\\(")[1].split("")[1]));
-						instruction.dest_reg_original_str = splitted[1].split("\\(")[1];
+						String s_dest = splitted[1].split("\\(")[1];
+						instruction.dest_reg_original_str = s_dest.substring(0, s_dest.length()-1);
 						instruction.source_reg1_original_str = splitted[0];
 					}
 					else if (instruction.getOpcode().equals("and"))

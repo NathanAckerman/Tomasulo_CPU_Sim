@@ -118,6 +118,7 @@ public class RegisterFile
             default: {
                 System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
                 System.out.println("Error happened with instruction detail:\n" + i.toString());
+		System.exit(1);
                 return false;
             }
         }
