@@ -37,8 +37,10 @@ public class Simulator
 
 	private void run_cycle()
 	{
-		this.cycle = this.cycle + 1;
-
+		System.out.println("\n\n*******************\n\n");
+		System.out.println("Cycle: "+this.cycle);
+		System.out.println("\n\n*******************\n\n");
+		
 		// TODO parameterize this
 		// this also does wb and rob
 		int min_rob_bw = 2;
@@ -56,6 +58,8 @@ public class Simulator
 		// - needs to be primed for the first cycle of the simluation
 
 		cdb.clear();
+
+		this.cycle = this.cycle + 1;
 	}
 
 	/* Simulates Part 1 */
@@ -64,6 +68,21 @@ public class Simulator
 		// TODO fetch instruction from instruction_cache
 		// TODO deal with PC
 		run_cycle();
+		run_cycle();
+
+		/*
+		while(!SimulationDone()) {
+			run_cycle();
+		}
+		*/
+
+		System.out.println("Sim Ending at cycle: "+this.cycle);
+
+	}
+
+	public boolean SimulationDone()
+	{
+		return this.rob.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
 	}
 
 	/* Simulates Part 2 */

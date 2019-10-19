@@ -124,6 +124,11 @@ public class Issuer {
 		return size_limit - queue.size();
 	}
 
+	public int getNumEntries()
+	{
+		return queue.size();
+	}
+
 
 
 }

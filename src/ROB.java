@@ -118,6 +118,7 @@ public class ROB
 	}
 
 	public boolean isFull() { return cur_size == ROB_SIZE; }
+	public int getNumEntries() { return cur_size; }
 
 	private int decr(int i) { return (i - 1) % ROB_SIZE; }
 	private int incr(int i) { return (i + 1) % ROB_SIZE; }
