@@ -23,7 +23,8 @@ public final class ReservationStationStatusTable {
         if(!stationMap.containsKey(unitName)) return false;
 
         if(stationMap.get(unitName).size() == stationSizeMap.get(unitName).intValue()) return false;
-        
+
+        stationMap.get(unitName).add(i);
 
         // Do some renaming here for source registers in order to store it into Station object
         return true;

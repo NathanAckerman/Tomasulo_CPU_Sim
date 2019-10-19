@@ -68,11 +68,16 @@ public class Instruction
 		result += "dest_reg_original_str:" + dest_reg_original_str + "\n";
 		result += "source_reg1_original_str:" + source_reg1_original_str + "\n";
 		result += "source_reg2_original_str:" + source_reg2_original_str + "\n";
+		result += "source_reg1_rename_str:" + source_reg1_renamed_str + "\n";
+		result += "source_reg2_original_str:" + source_reg2_renamed_str + "\n";
+		result += "dest_value" + dest_reg_value + "\n";
+		result += "source_reg1_value" + source_reg1_value + "\n";
+		result += "source_reg2_value:" + source_reg2_value + "\n";
 		return result;
 	}
 
 	public boolean isWaitingOnValue()
 	{
-		return source_reg1_value == null || (source_reg2_value == null && immediate == -1);
+		return (source_reg1_value == null && immediate == -1 )|| (source_reg2_value == null && immediate == -1);
 	}
 }
