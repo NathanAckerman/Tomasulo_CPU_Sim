@@ -34,7 +34,9 @@ public class RegisterFile
             case "andi": case "ori":
             case "slti": case "addi":
             case "subi": case "sd": 
-            case "ld": case "fld": {
+            case "ld": case "fld":
+            case "fsd": case "beq":
+            case "bne": {
                 if(!setIntFirstRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 1");
 		    System.exit(1);
@@ -51,20 +53,6 @@ public class RegisterFile
                     System.out.println(i.toString() + "produced an error 2");      
 		    System.exit(1);
                 } 
-
-                break;
-            }
-
-            case "fsd":
-            case "beq": case "bne": {
-                // NOTE FOR BRANCHES: 
-                // Parser is set up in such a way that it is always comparing a register to a value. 
-                // I.E., beq R1, R2, loop is invalid but beq R1, $5, loop is valid
-                // Assumptions: BEQ takes in only integer registers followed by one immediate
-                if(!setFPFirstRegisterValue(i)) {
-                    System.out.println(i.toString() + "produced an error 3");
-		    System.exit(1);
-                }
 
                 break;
             }
