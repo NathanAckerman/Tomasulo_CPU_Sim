@@ -20,13 +20,16 @@ public class ROB
 		back_i = ROB_SIZE - 1;
 		rename_table = table;
 		instr_killer = the_instr_killer;
+		for (int i = 0; i < size; i++) {
+			queue.add(null);
+		}
 	}
 
 	public int enqueue(Instruction inst)
 	{
-		if (isFull())
+		if (isFull()) {
 			return -1;
-
+		}
 		back_i = incr(back_i);
 		queue.set(back_i, inst);
 		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);

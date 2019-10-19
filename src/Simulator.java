@@ -106,6 +106,7 @@ public class Simulator
 			Memory memory = simulator.mem;
 
 			Parser.parseFile(filepath, instruction_cache, memory);
+			System.out.println(instruction_cache);
 			simulator.run(instruction_cache, memory);
 
 			System.out.println(instruction_cache.toString());

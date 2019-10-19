@@ -22,6 +22,7 @@ public class TomRenameTable {
 	{
 		LinkedList<RenameEntry> ll = hm.get(reg);
 		if (ll == null) {
+			ll = new LinkedList<RenameEntry>();
 			ll.add(new RenameEntry(rob_index, instr));
 			hm.put(reg, ll);
 		} else {
