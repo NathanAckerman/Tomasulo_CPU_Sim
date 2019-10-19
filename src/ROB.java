@@ -40,6 +40,7 @@ public class ROB
 
 	public ArrayList<Instruction> dequeue(int count)
 	{
+		System.out.println("dequeue count: "+count);
 		ArrayList<Instruction> arr = new ArrayList<Instruction>();
 		for (int i = 0; i < count; i++) {
 			Instruction inst = dequeue();
@@ -76,7 +77,7 @@ public class ROB
 		}
 		int count = 0;
 		int c = 0;
-		for (int i = front_i; i < cur_size; i = incr(i)) {
+		for (int i = front_i; c < cur_size; i = incr(i)) {
 			if(queue[i] == null){
 				continue;
 			}
@@ -87,7 +88,7 @@ public class ROB
 			}
 			c++;
 		}
-
+		System.out.println("query num rob rdy returned: "+count);
 		return count;
 	}
 

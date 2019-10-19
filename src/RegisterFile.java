@@ -143,9 +143,12 @@ public class RegisterFile
             case "fld": {
                 return pushToFPRegistersRenamed(i);
             }
+		case "fsd": case "sd":
+			return true;
             default: {
                 System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
                 System.out.println("Error happened with instruction detail:\n" + i.toString());
+		System.exit(1);
                 return false;
             }
         }

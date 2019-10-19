@@ -78,6 +78,13 @@ public class Simulator
 		run_cycle();
 		run_cycle();
 		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
 
 /*
 		while(!SimulationDone()) {
