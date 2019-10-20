@@ -1,0 +1,8 @@
+fld R1, 0(R1)
+fadd R1, R1, R1
+fsub R2, R1, R1
+fmul R3, R1, R1
+fsd R3, 4(R0)
+
+DATA
+Mem(0) = 2.0
