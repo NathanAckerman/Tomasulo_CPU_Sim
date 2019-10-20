@@ -29,8 +29,9 @@ public class ROB
 			return -1;
 		}
 
-		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
 		queue[back_i] = inst;
+		//System.out.println("\n\n***************Instruction being enqueed in rob at index "+back_i+"\n\n");
+		//System.out.println(inst);
 		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
 		int index_in_rob = back_i;
 		back_i = incr(back_i);
