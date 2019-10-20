@@ -1,0 +1,4 @@
+addi, R1, R3, 100
+subi, R5, R1, 40
+addi R4, R4, 20
+sub R9, R5, R4
