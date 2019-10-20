@@ -19,27 +19,27 @@ public class InstructionEvaluator {
 	{
 		switch (instr.opcode) {
 			case "and":
-				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.source_reg2_value)));		
+				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() & instr.source_reg2_value.intValue());
 				break;
 
 			case "andi":
-				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.immediate)));		
+				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() & instr.immediate);
 				break;
 
 			case "or":
-				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.source_reg2_value)));		
+				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() | instr.source_reg2_value.intValue());
 				break;
 
 			case "ori":
-				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.immediate)));		
+				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() | instr.immediate);
 				break;
 
 			case "slt":
-				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.source_reg2_value)));		
+				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() << instr.source_reg2_value.intValue());
 				break;
 
 			case "slti":
-				instr.dest_reg_value = (float)((Float.floatToRawIntBits(instr.source_reg1_value) & Float.floatToRawIntBits(instr.immediate)));		
+				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() << instr.immediate);
 				break;
 
 			case "add":
@@ -75,7 +75,11 @@ public class InstructionEvaluator {
 				break;
 
 			case "fdiv":
-				instr.dest_reg_value = instr.source_reg1_value / instr.source_reg2_value;
+				try {
+					instr.dest_reg_value = instr.source_reg1_value / instr.source_reg2_value;
+				} catch(Exception e){
+					System.out.println("Error:" + e);
+				}
 				break;
 
 			case "ld":
