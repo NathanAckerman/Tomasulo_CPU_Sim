@@ -1,5 +1,5 @@
 public class InstructionKiller {
-	Simulator sim;
+	public Simulator sim;
 
 	InstructionKiller(Simulator the_sim)
 	{
@@ -18,10 +18,9 @@ public class InstructionKiller {
 		ReservationStationStatusTable.killInstruction(instr);
 		
 		//find and kill the instruction if in the issuer
-		sim.issuer.killInstr();
 
 		//need to unmap the register it reserved because it was going to write into it
-		if (instr.dest_reg_original_str != null) {
+		if (instr.dest_reg_original_str != null && !instr.opcode.equals("sd") && !instr.opcode.equals ("fsd")) {
 			sim.rename_table.removeRename(instr.dest_reg_original_str, instr);
 		}
 	}

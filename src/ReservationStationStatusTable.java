@@ -37,6 +37,12 @@ public final class ReservationStationStatusTable {
 
         for (Instruction i : stations) {
             if (!i.isWaitingOnValue()) {
+                if(i.opcode.equals("bne")){
+                    System.out.println("asdadsa");
+                }
+                if(i.opcode.equals("sub") && i.source_reg1_original_str.equals("R20")){
+                    System.out.println("HERE");
+                }
                 stations.remove(i);
                 return i;
             }

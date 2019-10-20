@@ -29,6 +29,7 @@ public class ROB
 			return -1;
 		}
 
+		System.out.println("Back_i before crashing: " + back_i);
 		queue[back_i] = inst;
 		//System.out.println("\n\n***************Instruction being enqueed in rob at index "+back_i+"\n\n");
 		//System.out.println(inst);
@@ -149,6 +150,7 @@ public class ROB
 			if (queue[i] != null) {
 				if (queue[i] == instr) {
 					killing = true;
+					instr_killer.sim.issuer.killInstr();
 					inst_is_branch = true;
 				}
 				if (killing && !inst_is_branch) {
@@ -170,6 +172,13 @@ public class ROB
 	public boolean isFull() { return cur_size == ROB_SIZE; }
 	public int getNumEntries() { return cur_size; }
 
-	private int decr(int i) { return (i - 1) % ROB_SIZE; }
+	private int decr(int i) {
+		if( i == 0) {
+			return ROB_SIZE - 1;
+		} else {
+			return (i - 1);
+		}
+	}
+
 	private int incr(int i) { return (i + 1) % ROB_SIZE; }
 }

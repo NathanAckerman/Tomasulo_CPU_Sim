@@ -46,6 +46,11 @@ public class InstructionCache
 
 	public void doCycle()
 	{
+		if (next_pc != null) {
+			pc = next_pc;
+			next_pc = null;
+		}
+
 		System.out.println("\n\n////////////////////////\n");
 		System.out.println("In cache doCycle()");
 		System.out.println("num_left_unissued = "+num_instr_in_left_unissued);

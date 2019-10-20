@@ -35,6 +35,7 @@ public class Issuer {
 			queue.add(instr);
 			if (instr.opcode.equals("beq") || instr.opcode.equals("bne")) {
 				int addr = btb.predict(instr.address);
+				instr.predicted_target = addr;
 				fetcher.next_pc = addr;
 			}
 			return true;
