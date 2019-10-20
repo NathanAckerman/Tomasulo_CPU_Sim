@@ -3,12 +3,13 @@ public class InstructionEvaluator {
 	static ROB rob;
 	static BTB btb;
 	static Memory mem;
-	static Integer next_pc;
-
-	InstructionEvaluator(ROB the_rob, BTB the_btb, Memory the_mem, InstructionCache cache) {
+	//static Integer next_pc;
+	static InstructionCache cache;
+	InstructionEvaluator(ROB the_rob, BTB the_btb, Memory the_mem, InstructionCache the_cache) {
 		rob = the_rob;
 		btb = the_btb;
-		next_pc = cache.next_pc;
+		//next_pc = cache.next_pc;
+		cache = the_cache;
 		mem = the_mem;
 	}
 
@@ -96,14 +97,21 @@ public class InstructionEvaluator {
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.target, true);
-					next_pc = instr.target;
+					cache.next_pc = instr.target;
+					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
+					System.out.println("Setting pc to: "+cache.next_pc);
+					break;
 				}
 				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
-					next_pc = instr.address+1;
+					cache.next_pc = instr.address+1;
+					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
+					System.out.println("Setting pc to: "+cache.next_pc);
+					break;
 				}
+				System.out.println("\n########################\nbranch correctly predicted\n");
 				break;
 
 			case "bne":
@@ -112,14 +120,21 @@ public class InstructionEvaluator {
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.target, true);
-					next_pc = instr.target;
+					cache.next_pc = instr.target;
+					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
+					System.out.println("Setting pc to: "+cache.next_pc);
+					break;
 				}
 				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
-					next_pc = instr.address+1;
+					cache.next_pc = instr.address+1;
+					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
+					System.out.println("Setting pc to: "+cache.next_pc);
+					break;
 				}
+				System.out.println("\n########################\nbranch correctly predicted\n");
 				break;
 
 			default:

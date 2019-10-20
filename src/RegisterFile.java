@@ -320,6 +320,8 @@ public class RegisterFile
 		String int_reg = (String)pair.getKey();
 		System.out.println("Reg: "+int_reg+"    val: "+Integer.toString(int_val));
 	}
+	
+	System.out.println("\n\n");
 
 	Iterator hm_iter = fpRegisters.entrySet().iterator();
 	while (hm_iter.hasNext()) {

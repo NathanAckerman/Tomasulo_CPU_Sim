@@ -46,19 +46,30 @@ public class InstructionCache
 
 	public void doCycle()
 	{
+		System.out.println("\n\n////////////////////////\n");
+		System.out.println("In cache doCycle()");
+		System.out.println("num_left_unissued = "+num_instr_in_left_unissued);
+		System.out.println("pc is "+pc);
 		int totalIssued = 0;
 		if (instr_left_in_line() && pc_in_line(pc)) {
+			System.out.println("instrs left in line including pc");
 			totalIssued = issueInstructions();
 		} else {
+			System.out.println("need new cacheline");
 			get_cache_line_with_pc(pc);
 			totalIssued = issueInstructions();
 		}
+		System.out.println("instr sent to issuer this cycle: "+totalIssued);
+		num_instr_in_left_unissued -= totalIssued;
 		if (next_pc == null) {
+			System.out.println("next pc was null");
 			pc = pc + totalIssued;
-			next_pc = pc + 1;
 		} else {
+			System.out.println("next pc was set so need to grab that");
+			System.out.println("next pc is: "+next_pc);
 			pc = next_pc;
-			next_pc = pc + totalIssued;
+			next_pc = null;//will this cause any problems when killing since we already killed?
+			//maybe we should just update the pc this cycle??
 		}
 	}
 
@@ -66,10 +77,11 @@ public class InstructionCache
 	{
 		//printCacheLine();
 		int num_spots_in_issuer = issuer.getEmptySpots();
+		System.out.println("\n\n^^^^^^^^^^^^^^^^^^^^\n");
+		System.out.println("num_spots_in_issuer: "+num_spots_in_issuer);
 		boolean issuing = false;
 		int num_sent = 0;
 		for (Instruction instr : cache_line) {
-
 			if (num_sent == num_spots_in_issuer) {
 				break;
 			}
@@ -81,11 +93,12 @@ public class InstructionCache
 					break;
 				}
 				if (issuer.enqueueInstruction(cloneInstruction(instr))) {
+					System.out.println("\n\nInstruction Going To Issuer From Cache:\n"+instr);
 					num_sent++;
 				}
 				
 			}
-			if(instr != null && (instr.opcode.equals("bne") || instr.opcode.equals("beq"))){
+			if(instr != null && issuing && (instr.opcode.equals("bne") || instr.opcode.equals("beq"))){
 				return num_sent;
 			}
 		}
@@ -104,7 +117,7 @@ public class InstructionCache
 	private boolean pc_in_line(int pc)
 	{
 		for(Instruction instr: cache_line){
-			if(instr.address == pc) {//TODO need to decide how pc references are done
+			if( instr != null && instr.address == pc) {//TODO need to decide how pc references are done
 				return true;
 			}
 		}
@@ -125,21 +138,25 @@ public class InstructionCache
 			cache_line[1] = findInstruction(pc+1);
 			cache_line[2] = findInstruction(pc+2);
 			cache_line[3] = findInstruction(pc+3);
-		} else if ((pc-BASE_ADDR) % 4 == 4) {
+			num_instr_in_left_unissued = 4;
+		} else if ((pc-BASE_ADDR) % 4 == 1) {
 			cache_line[0] = findInstruction(pc-1);
 			cache_line[1] = pc_instr;
 			cache_line[2] = findInstruction(pc+1);
 			cache_line[3] = findInstruction(pc+2);
-		} else if ((pc-BASE_ADDR) % 4 == 8) {
+			num_instr_in_left_unissued = 3;
+		} else if ((pc-BASE_ADDR) % 4 == 2) {
 			cache_line[0] = findInstruction(pc-2);
 			cache_line[1] = findInstruction(pc-1);
 			cache_line[2] = pc_instr;
 			cache_line[3] = findInstruction(pc+1);
-		} else if ((pc-BASE_ADDR) % 4 == 12) {
+			num_instr_in_left_unissued = 2;
+		} else if ((pc-BASE_ADDR) % 4 == 3) {
 			cache_line[0] = findInstruction(pc-3);
 			cache_line[1] = findInstruction(pc-2);
 			cache_line[2] = findInstruction(pc-1);
 			cache_line[3] = pc_instr;
+			num_instr_in_left_unissued = 1;
 		}
 	}
 

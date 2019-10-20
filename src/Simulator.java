@@ -70,15 +70,36 @@ public class Simulator
 
 		run_cycle();
 		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
+		run_cycle();
 
 
-
+/*
 		while(!SimulationDone()) {
 			run_cycle();
 		}
+*/
 
-
-
+		System.out.println("\n\n");
 		System.out.println("Sim Ending at cycle: "+this.cycle);
 
 		this.rf.printRegisters();
@@ -87,8 +108,8 @@ public class Simulator
 
 	public boolean SimulationDone()
 	{
-		System.out.println(this.rob.getNumEntries());
-		System.out.println(this.issuer.getNumEntries());
+		System.out.println("Entries in ROB: "+this.rob.getNumEntries());
+		System.out.println("Entries in Issuer: "+this.issuer.getNumEntries());
 		return this.rob.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
 	}
 
@@ -118,8 +139,7 @@ public class Simulator
 			System.out.println(instruction_cache);
 			simulator.run(instruction_cache, memory);
 
-			System.out.println(instruction_cache.toString());
-			// TODO: Print Registers
+			//System.out.println(instruction_cache.toString());
 			System.out.println(memory.toString());
 			// TODO: Print cycle count and other information
 
