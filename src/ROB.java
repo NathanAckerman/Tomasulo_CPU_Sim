@@ -143,21 +143,26 @@ public class ROB
 	{
 		int num_killed = 0;
 		boolean killing = false;
-		for (int i = front_i; i < cur_size; incr(i)) {
+		boolean inst_is_branch = false;
+		for (int i = front_i; i < cur_size; i = incr(i) ) {
 			if (queue[i] != null) {
 				if (queue[i] == instr) {
-					killing = true;	
+					killing = true;
+					inst_is_branch = true;
 				}
-				if (killing) {
+				if (killing && !inst_is_branch) {
 					instr_killer.killInstructionAnywhere(queue[i]);
 					rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
 					queue[i] = null;
 					num_killed++;
+					back_i = decr(back_i);
+				}else if(killing){
+					inst_is_branch = false;
 				}
 			}
 		}
 		cur_size -= num_killed;
-		front_i = front_i + num_killed % ROB_SIZE;
+		//front_i = front_i + num_killed % ROB_SIZE;
 	}
 
 	public boolean isFull() { return cur_size == ROB_SIZE; }

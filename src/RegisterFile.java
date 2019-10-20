@@ -40,7 +40,7 @@ public class RegisterFile
             case "bne": {
                 if(!setIntFirstRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 1");
-		    System.exit(1);
+		            System.exit(1);
                 }
 
                 break;
@@ -62,8 +62,8 @@ public class RegisterFile
                     if(fpRegistersRenamed.get(i.dest_reg_renamed_str) != null) {
                         i.dest_reg_value= fpRegistersRenamed.get(i.dest_reg_renamed_str);
                     }
-                }else if(fpRegisters.containsKey(i.dest_reg_original_str)) {
-                    i.dest_reg_value = fpRegisters.get(i.dest_reg_original_str).floatValue();
+                }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
+                    i.dest_reg_value = intRegisters.get(i.dest_reg_original_str).floatValue();
                 }else{
                     System.out.println(i.toString() + "produced an error in fsd fd read");
                     System.exit(1);
@@ -99,7 +99,7 @@ public class RegisterFile
 
             // int non-immediate
             case "and": case "or": case "slt": 
-            case "add": case "mult":
+            case "add": case "mul":
             case "sub": {
                 if(!setIntFirstRegisterValue(i) || !setIntSecondRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 2");      
@@ -111,7 +111,7 @@ public class RegisterFile
 
             // floating point 
             case "fadd": case "fsub":
-            case "fmult": case "fdiv": {
+            case "fmul": case "fdiv": {
                 if(!setFPFirstRegisterValue(i) || !setFPSecondRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 4");      
 		    System.exit(1);
@@ -138,10 +138,10 @@ public class RegisterFile
             case "slt": case "slti":
             case "add": case "addi":
             case "sub": case "subi":
-            case "mult": case "ld": {
+            case "mul": case "ld": {
                 return CommitToIntRegisters(i);
             }
-            case "fmult": case "fdiv":
+            case "fmul": case "fdiv":
             case "fadd": case "fsub":
             case "fld": {
                 return CommitToFPRegisters(i);
@@ -154,8 +154,11 @@ public class RegisterFile
                 mem.add_float(i.dest_reg_value.intValue() + i.immediate, i.source_reg1_value.intValue());
                 return true;
             }
+            case "bne": case "beq": {
+                return true;
+            }
             default: {
-                System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
+                System.out.println("Something went wrong in commit function. Opcode " + opcode + " is not valid");
                 System.out.println("Error happened with instruction detail:\n" + i.toString());
 		        System.exit(1);
                 return false;
@@ -174,20 +177,23 @@ public class RegisterFile
             case "slt": case "slti":
             case "add": case "addi":
             case "sub": case "subi":
-            case "mult": case "ld": {
+            case "mul": case "ld": {
                 return pushToIntRegistersRenamed(i);
             }
-            case "fmult": case "fdiv":
+            case "fmul": case "fdiv":
             case "fadd": case "fsub":
             case "fld": {
                 return pushToFPRegistersRenamed(i);
             }
-		case "fsd": case "sd":
-			return true;
+		    case "fsd": case "sd":
+            case "bne": case "beq": {
+                return true;
+            }
+
             default: {
                 System.out.println("Something went wrong in wb_push function. Opcode " + opcode + " is not valid");
                 System.out.println("Error happened with instruction detail:\n" + i.toString());
-		System.exit(1);
+		        System.exit(1);
                 return false;
             }
         }

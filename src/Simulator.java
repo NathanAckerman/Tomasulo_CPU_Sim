@@ -20,17 +20,17 @@ public class Simulator
 	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem, pc);
 	private InstructionCache instruction_cache;
 
-	public Issuer issuer = new Issuer(8, 4, units, rob, rename_table, instruction_cache, btb, rf);
+	public Issuer issuer;
 
 	public Simulator()
 	{
 		this.cycle = 0;
 		this.units.add(new Unit(1, 4, UnitName.INT));
-		this.units.add(new Unit(4, 2, UnitName.MULT));
+		this.units.add(new Unit(4, 2, UnitName.MUL));
 		this.units.add(new Unit(1, 2, UnitName.LOAD));
 		this.units.add(new Unit(1, 2, UnitName.STORE));
 		this.units.add(new Unit(3, 3, UnitName.FPADD));
-		this.units.add(new Unit(4, 4, UnitName.FPMULT));
+		this.units.add(new Unit(4, 4, UnitName.FPMUL));
 		this.units.add(new Unit(8, 2, UnitName.FPDIV));
 		this.units.add(new Unit(1, 2, UnitName.BU));
 	}
@@ -70,20 +70,12 @@ public class Simulator
 
 		run_cycle();
 		run_cycle();
-				run_cycle();
-		run_cycle();
-				run_cycle();
-		run_cycle();
-				run_cycle();
-		run_cycle();
-				run_cycle();
-		run_cycle();
 
-/*
+
 		while(!SimulationDone()) {
 			run_cycle();
 		}
-*/
+
 
 
 		System.out.println("Sim Ending at cycle: "+this.cycle);
@@ -115,6 +107,7 @@ public class Simulator
 			Simulator simulator = new Simulator();
 
 			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc);
+			simulator.issuer =  new Issuer(8, 4, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
 			simulator.instruction_cache = instruction_cache;
 			simulator.instruction_cache.issuer = simulator.issuer;
 			Memory memory = simulator.mem;

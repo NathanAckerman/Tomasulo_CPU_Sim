@@ -63,7 +63,7 @@ public class Issuer {
 
 		int rob_index = rob.enqueue(head);
 
-		if (!(head.opcode.equals("fsd") || head.opcode.equals("sd"))) {
+		if (!(head.opcode.equals("fsd") || head.opcode.equals("sd") || head.opcode.equals("bne") || head.opcode.equals("beq"))) {
 			head.dest_reg_renamed_str = Integer.toString(rob_index);
 		}
 
@@ -79,7 +79,11 @@ public class Issuer {
 		}
 
 		if (head.opcode.equals("fsd") || head.opcode.equals("sd")) {
-			head.dest_reg_renamed_str = Integer.toString(rename_table.getRename(head.dest_reg_original_str));
+			Integer rename_int = rename_table.getRename(head.dest_reg_original_str);
+			if (rename_int != null) {
+				head.dest_reg_renamed_str = Integer.toString(rename_int);
+			}
+
 		}
 
 		regfile.read(head);
@@ -105,12 +109,12 @@ public class Issuer {
 			case "subi":
 				return UnitName.INT;
 			case "mul":
-				return UnitName.MULT;
+				return UnitName.MUL;
 			case "fadd":
 			case "fsub":
 				return UnitName.FPADD;
 			case "fmul":
-				return UnitName.FPMULT;
+				return UnitName.FPMUL;
 			case "fdiv":
 				return UnitName.FPDIV;
 			case "beq":

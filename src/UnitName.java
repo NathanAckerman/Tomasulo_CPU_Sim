@@ -1,11 +1,11 @@
 public enum UnitName 
 { 
     INT, 
-    MULT, 
+    MUL,
     LOAD,
     STORE,
     FPADD, 
-    FPMULT, 
+    FPMUL,
     FPDIV, 
     BU; 
 } 
