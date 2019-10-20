@@ -63,7 +63,11 @@ public class ROB
 		Instruction inst = queue[front_i];
 		if (!inst.completed)
 			return null;
-		rename_table.removeRename(inst.dest_reg_original_str, inst);
+
+		if(!(inst.opcode.equals("sd") || inst.opcode.equals("fsd"))) {
+			rename_table.removeRename(inst.dest_reg_original_str, inst);
+		}
+
 		queue[front_i] = null;
 		front_i = incr(front_i);
 		cur_size -= 1;
