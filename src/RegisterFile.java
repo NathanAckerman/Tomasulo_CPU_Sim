@@ -51,10 +51,10 @@ public class RegisterFile
                     if(fpRegistersRenamed.get(i.source_reg1_renamed_str) != null) {
                         i.source_reg1_value = fpRegistersRenamed.get(i.source_reg1_renamed_str);
                     }
-                }else if(fpRegisters.containsKey(i.dest_reg_original_str)) {
+                }else if(fpRegisters.containsKey(i.source_reg1_original_str)) {
                     i.source_reg1_value = fpRegisters.get(i.source_reg1_original_str).floatValue();
                 }else{
-                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.out.println(i.toString() + "produced an error in fsd fd read 1");
                     System.exit(1);
                 }
 
@@ -65,7 +65,7 @@ public class RegisterFile
                 }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
                     i.dest_reg_value = intRegisters.get(i.dest_reg_original_str).floatValue();
                 }else{
-                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.out.println(i.toString() + "produced an error in fsd fd read 2");
                     System.exit(1);
                 }
                 break;
@@ -77,10 +77,10 @@ public class RegisterFile
                     if(intRegistersRenamed.get(i.source_reg1_renamed_str) != null) {
                         i.source_reg1_value = intRegistersRenamed.get(i.source_reg1_renamed_str).floatValue();
                     }
-                }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
+                }else if(intRegisters.containsKey(i.source_reg1_original_str)) {
                     i.source_reg1_value = intRegisters.get(i.source_reg1_original_str).floatValue();
                 }else{
-                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.out.println(i.toString() + "produced an error in fsd fd read 3 ");
                     System.exit(1);
                 }
 
@@ -91,7 +91,7 @@ public class RegisterFile
                 }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
                     i.dest_reg_value = intRegisters.get(i.dest_reg_original_str).floatValue();
                 }else{
-                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.out.println(i.toString() + "produced an error in fsd fd read 4");
                     System.exit(1);
                 }
             break;

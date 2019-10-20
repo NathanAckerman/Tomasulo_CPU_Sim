@@ -118,6 +118,7 @@ public class Simulator
 
 			//System.out.println(instruction_cache.toString());
 			System.out.println(memory.toString());
+			System.out.println("Total committed instructions: " + simulator.rob.committedCount);
 			// TODO: Print cycle count and other information
 
 		} else if (args.length == 2) {

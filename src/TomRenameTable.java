@@ -11,6 +11,10 @@ public class TomRenameTable {
 
 	public Integer getRename(String reg)
 	{
+		if(reg == null) {
+			return null;
+		}
+
 		LinkedList<RenameEntry> ll = hm.get(reg);
 		if (ll == null) {
 			return null;
@@ -20,6 +24,10 @@ public class TomRenameTable {
 
 	public void setRename(String reg, int rob_index, Instruction instr)
 	{
+		if(instr == null) {
+			return;
+		}
+
 		LinkedList<RenameEntry> ll = hm.get(reg);
 		if (ll == null) {
 			ll = new LinkedList<RenameEntry>();

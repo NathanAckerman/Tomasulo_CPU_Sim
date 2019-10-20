@@ -25,6 +25,24 @@ public class Parser
 		int instructionCacheBaseAddress = 1000;
 		int cur_instruction_num = 0;
 
+		try {
+			Scanner scanner = new Scanner(new File(path));
+			int counter = 1000;
+
+			while (scanner.hasNextLine()) {
+
+				String next_line = scanner.nextLine();
+				if (next_line.indexOf(':') != -1) {
+					labels.put(next_line.split(":", 2)[0], counter);
+					next_line = next_line.split(":", 2)[1].trim();
+				}
+				counter++;
+			}
+		} catch (FileNotFoundException e) {
+				e.printStackTrace();
+		}
+
+
 		try 
 		{
 

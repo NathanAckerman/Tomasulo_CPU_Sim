@@ -12,6 +12,7 @@ public class Issuer {
 	private InstructionCache fetcher;
 	private BTB btb;
 	private RegisterFile regfile;
+	public boolean branch_in_pipeline = false;
 
 	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob, TomRenameTable the_rename_table, InstructionCache the_fetcher, BTB the_btb, RegisterFile regfile)
 	{
@@ -46,7 +47,13 @@ public class Issuer {
 	public void doCycle()
 	{
 		int num_issued = 0;
+
+
 		while (queue.size() > 0 && num_issued < issue_limit && !rob.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))) {
+			Instruction head = queue.peek();
+			if(head != null && (head.opcode.equals("bne") || head.opcode.equals("beq")) && branch_in_pipeline) {
+				return;
+			}
 			issueHeadInstr();	
 			num_issued++;
 		}
@@ -54,6 +61,8 @@ public class Issuer {
 
 	//check if the instr at the head of this queue is runnable (has a reservation station)
 	private void issueHeadInstr() {
+
+
 		Instruction head = queue.remove();
 		head.issue_id = total_issued;
 		total_issued++;
@@ -89,6 +98,9 @@ public class Issuer {
 
 		regfile.read(head);
 		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
+		if(head.opcode.equals("beq") || head.opcode.equals("bne")) {
+			branch_in_pipeline = true;
+		}
 	}
 
 	public void killInstr() {

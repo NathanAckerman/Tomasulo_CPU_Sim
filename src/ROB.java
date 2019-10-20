@@ -11,6 +11,7 @@ public class ROB
 	private InstructionKiller instr_killer;
 
 	private Instruction[] queue;
+	public int committedCount = 0;
 
 	public ROB(final int size, TomRenameTable table, InstructionKiller the_instr_killer)
 	{
@@ -72,6 +73,11 @@ public class ROB
 		queue[front_i] = null;
 		front_i = incr(front_i);
 		cur_size -= 1;
+
+		committedCount++;
+		if (inst.opcode.equals("bne") || inst.opcode.equals("beq")) {
+			instr_killer.sim.issuer.branch_in_pipeline = false;
+		}
 		return inst;
 	}
 
