@@ -1,0 +1,5 @@
+addi R1, R1, 2
+slti R2, R1, 1
+addi R3, R3, 4
+addi R5, R7, 2
+slt R9, R3, R5

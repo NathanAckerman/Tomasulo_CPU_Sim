@@ -1,0 +1,3 @@
+ori R3, R5, 3
+andi R7, R3, 1
+and R9, R7, R1
