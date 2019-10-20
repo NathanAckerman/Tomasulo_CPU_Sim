@@ -73,7 +73,7 @@ public class WB
                 numReadied +=1;
             }
         }
-
+        System.out.println("WB has " + numReadied + " instructions");
         return numReadied;
     }
 }

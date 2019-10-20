@@ -43,7 +43,7 @@ public class RegisterFile
 
                 break;
             }
-            case "fsd" : case "fd":
+            case "fsd" : case "sd":
             {
                 if(intRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
                     i.dest_reg_value = intRegistersRenamed.get(i.dest_reg_renamed_str).floatValue();
@@ -87,8 +87,7 @@ public class RegisterFile
 
     public boolean commit(Instruction i) {
 
-	System.out.println("Committing instruction:");
-	System.out.println(i);
+	System.out.println("Committing instruction:" + i);
         String opcode = i.getOpcode();
 
         switch (opcode) {

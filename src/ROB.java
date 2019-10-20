@@ -73,7 +73,6 @@ public class ROB
 		System.out.println("querying ready instructions: printing rob instrs");
 		int a = 0;
 		for (int i = front_i; a < cur_size; i = incr(i)) {
-			System.out.println(queue[i]);
 			a++;
 		}
 		int count = 0;

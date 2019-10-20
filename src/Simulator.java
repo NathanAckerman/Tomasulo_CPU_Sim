@@ -67,16 +67,16 @@ public class Simulator
 	{
 		// TODO fetch instruction from instruction_cache
 		// TODO deal with PC
-		this.rf.printRegisters();
 
 		run_cycle();
 		run_cycle();
+				run_cycle();
 		run_cycle();
+				run_cycle();
 		run_cycle();
+				run_cycle();
 		run_cycle();
-		run_cycle();
-		run_cycle();
-		run_cycle();
+				run_cycle();
 		run_cycle();
 
 /*
