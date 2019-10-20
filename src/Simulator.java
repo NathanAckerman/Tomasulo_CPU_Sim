@@ -11,7 +11,7 @@ public class Simulator
 	// TODO parameterize these
 	public TomRenameTable rename_table = new TomRenameTable();
 	public Memory mem = new Memory();
-	public RegisterFile rf = new RegisterFile(mem);
+	public RegisterFile rf = new RegisterFile(mem, rename_table);
 	private CDB cdb = new CDB(4, this);
 	private InstructionKiller instr_killer = new InstructionKiller(this);
 	public ROB rob = new ROB(16, rename_table, instr_killer);

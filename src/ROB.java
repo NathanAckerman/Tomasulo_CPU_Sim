@@ -32,7 +32,9 @@ public class ROB
 		queue[back_i] = inst;
 		//System.out.println("\n\n***************Instruction being enqueed in rob at index "+back_i+"\n\n");
 		//System.out.println(inst);
-		rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
+		if(!(inst.opcode.equals("sd") || inst.opcode.equals("fsd"))) {
+			rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
+		}
 		int index_in_rob = back_i;
 		back_i = incr(back_i);
 		cur_size += 1;

@@ -63,6 +63,12 @@ public class CDB
 				if(reservInst.source_reg2_renamed_str != null && reservInst.source_reg2_renamed_str.equals(inst.dest_reg_renamed_str)){
 					reservInst.source_reg2_value = inst.dest_reg_value;
 				}
+
+				if(reservInst.opcode.equals("sd") || reservInst.opcode.equals("fsd")){
+					if(reservInst.dest_reg_renamed_str != null && reservInst.dest_reg_renamed_str.equals(inst.dest_reg_renamed_str)){
+						reservInst.dest_reg_value = inst.dest_reg_value;
+					}
+				}
 			}
 		}
 	}

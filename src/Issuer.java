@@ -59,8 +59,14 @@ public class Issuer {
 		UnitName unit_name = getUnitName(head);
 		Integer rename_s1 = rename_table.getRename(head.source_reg1_original_str);
 		Integer rename_s2 = rename_table.getRename(head.source_reg2_original_str);
+
+
 		int rob_index = rob.enqueue(head);
-		head.dest_reg_renamed_str = Integer.toString(rob_index);
+
+		if (!(head.opcode.equals("fsd") || head.opcode.equals("sd"))) {
+			head.dest_reg_renamed_str = Integer.toString(rob_index);
+		}
+
 		if (rename_s1 == null) {
 			head.source_reg1_renamed_str = null;
 		} else {

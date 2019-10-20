@@ -20,10 +20,12 @@ public class RegisterFile
     private HashMap<String, Float> fpRegistersRenamed = new HashMap<String, Float>();
 
     private Memory mem;
+    private TomRenameTable renameTable;
 
-    public RegisterFile(Memory the_mem)
+    public RegisterFile(Memory the_mem, TomRenameTable renameTable)
     {
         mem = the_mem;
+        this.renameTable = renameTable;
     }
 
     // Fill out the instruction with values
@@ -43,18 +45,56 @@ public class RegisterFile
 
                 break;
             }
-            case "fsd" : case "sd":
+            case "fsd":
             {
-                if(intRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
-                    i.dest_reg_value = intRegistersRenamed.get(i.dest_reg_renamed_str).floatValue();
-                    break;
-                }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
-                    i.dest_reg_value = intRegisters.get(i.dest_reg_original_str).floatValue();
-                    break;
+                if(renameTable.getRename(i.source_reg1_original_str) != null){
+                    if(fpRegistersRenamed.get(i.source_reg1_renamed_str) != null) {
+                        i.source_reg1_value = fpRegistersRenamed.get(i.source_reg1_renamed_str);
+                    }
+                }else if(fpRegisters.containsKey(i.dest_reg_original_str)) {
+                    i.source_reg1_value = fpRegisters.get(i.source_reg1_original_str).floatValue();
                 }else{
                     System.out.println(i.toString() + "produced an error in fsd fd read");
                     System.exit(1);
                 }
+
+                if(this.renameTable.getRename(i.dest_reg_original_str) != null){
+                    if(fpRegistersRenamed.get(i.dest_reg_renamed_str) != null) {
+                        i.dest_reg_value= fpRegistersRenamed.get(i.dest_reg_renamed_str);
+                    }
+                }else if(fpRegisters.containsKey(i.dest_reg_original_str)) {
+                    i.dest_reg_value = fpRegisters.get(i.dest_reg_original_str).floatValue();
+                }else{
+                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.exit(1);
+                }
+                break;
+            }
+
+            case "sd":
+            {
+                if(this.renameTable.getRename(i.source_reg1_original_str) != null){
+                    if(intRegistersRenamed.get(i.source_reg1_renamed_str) != null) {
+                        i.source_reg1_value = intRegistersRenamed.get(i.source_reg1_renamed_str).floatValue();
+                    }
+                }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
+                    i.source_reg1_value = intRegisters.get(i.source_reg1_original_str).floatValue();
+                }else{
+                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.exit(1);
+                }
+
+                if(this.renameTable.getRename(i.dest_reg_original_str) != null){
+                    if(intRegistersRenamed.get(i.dest_reg_renamed_str) != null) {
+                        i.dest_reg_value= intRegistersRenamed.get(i.dest_reg_renamed_str).floatValue();
+                    }
+                }else if(intRegisters.containsKey(i.dest_reg_original_str)) {
+                    i.dest_reg_value = intRegisters.get(i.dest_reg_original_str).floatValue();
+                }else{
+                    System.out.println(i.toString() + "produced an error in fsd fd read");
+                    System.exit(1);
+                }
+            break;
             }
 
             // int non-immediate
@@ -155,8 +195,10 @@ public class RegisterFile
 
 
     public boolean setIntFirstRegisterValue(Instruction i){
-        if(intRegistersRenamed.containsKey(i.source_reg1_renamed_str)) {
-            i.source_reg1_value = intRegistersRenamed.get(i.source_reg1_renamed_str).floatValue();
+        if(this.renameTable.getRename(i.source_reg1_original_str) != null) { //If the renamed string is in the table
+            if(this.intRegistersRenamed.get(i.source_reg1_renamed_str) != null){ //If there is a value in the registerRenamed spectulative list
+                i.source_reg1_value = intRegistersRenamed.get(i.source_reg1_renamed_str).floatValue(); // Set the value
+            }
             return true;
         }else if(intRegisters.containsKey(i.source_reg1_original_str)) {
             i.source_reg1_value = intRegisters.get(i.source_reg1_original_str).floatValue();
@@ -167,8 +209,10 @@ public class RegisterFile
     }
 
     public boolean setIntSecondRegisterValue(Instruction i){
-        if(intRegistersRenamed.containsKey(i.source_reg2_renamed_str)) {
-            i.source_reg2_value = intRegistersRenamed.get(i.source_reg2_renamed_str).floatValue();
+        if(this.renameTable.getRename(i.source_reg2_original_str) != null) { //If the renamed string is in the table
+            if(this.intRegistersRenamed.get(i.source_reg2_renamed_str) != null){ //If there is a value in the registerRenamed spectulative list
+                i.source_reg2_value = intRegistersRenamed.get(i.source_reg2_renamed_str).floatValue(); // Set the value
+            }
             return true;
         }else if(intRegisters.containsKey(i.source_reg2_original_str)) {
             i.source_reg2_value = intRegisters.get(i.source_reg2_original_str).floatValue();
@@ -179,8 +223,10 @@ public class RegisterFile
     }
 
     public boolean setFPFirstRegisterValue(Instruction i){
-        if(fpRegistersRenamed.containsKey(i.source_reg1_renamed_str)) {
-            i.source_reg1_value = fpRegistersRenamed.get(i.source_reg1_renamed_str).floatValue();
+        if(this.renameTable.getRename(i.source_reg1_original_str) != null) { //If the renamed string is in the table
+            if(this.fpRegistersRenamed.get(i.source_reg1_renamed_str) != null){ //If there is a value in the registerRenamed spectulative list
+                i.source_reg1_value = fpRegistersRenamed.get(i.source_reg1_renamed_str).floatValue(); // Set the value
+            }
             return true;
         }else if(fpRegisters.containsKey(i.source_reg1_original_str)) {
             i.source_reg1_value = fpRegisters.get(i.source_reg1_original_str).floatValue();
@@ -191,8 +237,10 @@ public class RegisterFile
     }
 
     public boolean setFPSecondRegisterValue(Instruction i){
-        if(fpRegistersRenamed.containsKey(i.source_reg2_renamed_str)) {
-            i.source_reg2_value = fpRegistersRenamed.get(i.source_reg2_renamed_str).floatValue();
+        if(this.renameTable.getRename(i.source_reg2_original_str) != null) { //If the renamed string is in the table
+            if(this.fpRegistersRenamed.get(i.source_reg2_renamed_str) != null){ //If there is a value in the registerRenamed spectulative list
+                i.source_reg2_value = fpRegistersRenamed.get(i.source_reg2_renamed_str).floatValue(); // Set the value
+            }
             return true;
         }else if(fpRegisters.containsKey(i.source_reg2_original_str)) {
             i.source_reg2_value = fpRegisters.get(i.source_reg2_original_str).floatValue();
