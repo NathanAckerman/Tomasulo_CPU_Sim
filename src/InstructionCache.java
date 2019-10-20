@@ -19,7 +19,7 @@ public class InstructionCache
 		num_instr_in_left_unissued = 0;
 		this.issuer = null;
 		this.pc = pc;
-		this.next_pc = pc+1;
+		this.next_pc = null;
 	}
 
 	public String toString()
@@ -46,28 +46,30 @@ public class InstructionCache
 
 	public void doCycle()
 	{
+		int totalIssued = 0;
 		if (instr_left_in_line() && pc_in_line(pc)) {
-			issueInstructions();
+			totalIssued = issueInstructions();
 		} else {
 			get_cache_line_with_pc(pc);
-			issueInstructions();
+			totalIssued = issueInstructions();
 		}
 		if (next_pc == null) {
-			pc = pc+1;
+			pc = pc + totalIssued;
 			next_pc = pc + 1;
 		} else {
 			pc = next_pc;
-			next_pc = pc+1;
+			next_pc = pc + totalIssued;
 		}
 	}
 
-	private void issueInstructions()
+	private int issueInstructions()
 	{
 		//printCacheLine();
 		int num_spots_in_issuer = issuer.getEmptySpots();
 		boolean issuing = false;
 		int num_sent = 0;
 		for (Instruction instr : cache_line) {
+
 			if (num_sent == num_spots_in_issuer) {
 				break;
 			}
@@ -83,7 +85,12 @@ public class InstructionCache
 				}
 				
 			}
+			if(instr != null && (instr.opcode.equals("bne") || instr.opcode.equals("beq"))){
+				return num_sent;
+			}
 		}
+
+		return num_sent;
 	}
 
 	private void printCacheLine()

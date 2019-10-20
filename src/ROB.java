@@ -144,7 +144,8 @@ public class ROB
 		int num_killed = 0;
 		boolean killing = false;
 		boolean inst_is_branch = false;
-		for (int i = front_i; i < cur_size; i = incr(i) ) {
+		int c = 0;
+		for (int i = front_i; c < cur_size; i = incr(i) ) {
 			if (queue[i] != null) {
 				if (queue[i] == instr) {
 					killing = true;
@@ -152,13 +153,14 @@ public class ROB
 				}
 				if (killing && !inst_is_branch) {
 					instr_killer.killInstructionAnywhere(queue[i]);
-					rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
+					//rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
 					queue[i] = null;
 					num_killed++;
 					back_i = decr(back_i);
 				}else if(killing){
 					inst_is_branch = false;
 				}
+				c++;
 			}
 		}
 		cur_size -= num_killed;

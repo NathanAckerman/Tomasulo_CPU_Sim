@@ -14,11 +14,11 @@ public class InstructionKiller {
 		boolean killed_in_units = false; 
 		for (Unit u : sim.units)
 			killed_in_units = killed_in_units || u.killInstr(instr);
+
+		ReservationStationStatusTable.killInstruction(instr);
 		
 		//find and kill the instruction if in the issuer
-		if (!killed_in_units) {
-			sim.issuer.killInstr();
-		}
+		sim.issuer.killInstr();
 
 		//need to unmap the register it reserved because it was going to write into it
 		if (instr.dest_reg_original_str != null) {

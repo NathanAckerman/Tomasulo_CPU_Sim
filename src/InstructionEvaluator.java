@@ -3,12 +3,12 @@ public class InstructionEvaluator {
 	static ROB rob;
 	static BTB btb;
 	static Memory mem;
-	static Integer pc;
+	static Integer next_pc;
 
-	InstructionEvaluator(ROB the_rob, BTB the_btb, Memory the_mem, Integer the_pc) {
+	InstructionEvaluator(ROB the_rob, BTB the_btb, Memory the_mem, InstructionCache cache) {
 		rob = the_rob;
 		btb = the_btb;
-		pc = the_pc;
+		next_pc = cache.next_pc;
 		mem = the_mem;
 	}
 
@@ -96,13 +96,13 @@ public class InstructionEvaluator {
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.target, true);
-					pc = instr.target;
+					next_pc = instr.target;
 				}
 				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
-					pc = instr.address+1;
+					next_pc = instr.address+1;
 				}
 				break;
 
@@ -112,13 +112,13 @@ public class InstructionEvaluator {
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.target, true);
-					pc = instr.target;
+					next_pc = instr.target;
 				}
 				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
-					pc = instr.address+1;
+					next_pc = instr.address+1;
 				}
 				break;
 

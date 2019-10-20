@@ -17,7 +17,7 @@ public class Simulator
 	public ROB rob = new ROB(16, rename_table, instr_killer);
 	public WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
-	private InstructionEvaluator instr_eval = new InstructionEvaluator(rob, btb, mem, pc);
+	private InstructionEvaluator instr_eval;
 	private InstructionCache instruction_cache;
 
 	public Issuer issuer;
@@ -72,6 +72,7 @@ public class Simulator
 		run_cycle();
 
 
+
 		while(!SimulationDone()) {
 			run_cycle();
 		}
@@ -110,6 +111,7 @@ public class Simulator
 			simulator.issuer =  new Issuer(8, 4, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
 			simulator.instruction_cache = instruction_cache;
 			simulator.instruction_cache.issuer = simulator.issuer;
+			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.btb, simulator.mem, instruction_cache);
 			Memory memory = simulator.mem;
 
 			Parser.parseFile(filepath, instruction_cache, memory);

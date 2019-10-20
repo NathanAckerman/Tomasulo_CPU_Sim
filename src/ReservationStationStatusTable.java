@@ -72,5 +72,11 @@ public final class ReservationStationStatusTable {
 
         return allInstructions;
     }
+
+    public static void killInstruction(Instruction inst) {
+        for(ArrayList<Instruction> ins : stationMap.values()){
+            ins.remove(inst);
+        }
+    }
     
 }
