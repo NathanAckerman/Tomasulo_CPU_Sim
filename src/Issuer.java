@@ -286,7 +286,7 @@ public class Issuer {
 
 	public int getNumEntries()
 	{
-		return queue.size();
+		return queue.size() + queue2.size();
 	}
 
 

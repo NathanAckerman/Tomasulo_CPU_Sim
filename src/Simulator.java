@@ -97,14 +97,46 @@ public class Simulator
 	}
 
 	/* Simulates Part 2 */
-	public void run_smt(InstructionCache instruction_cache_1, InstructionCache instruction_cache_2, Memory memory)
+	public void run_smt()
 	{
 		run_cycle_smt();
+		run_cycle_smt();
+
+		while(!SimulationDoneSMT()){
+			run_cycle_smt();
+		}
+
+		System.out.println("Register file 1");
+		this.rf.printRegisters();
+		System.out.println("-------------------");
+		System.out.println("Register file 2");
+		this.rf2.printRegisters();
+		System.out.println("-------------------");
+
+		System.out.println("\n\n");
+		System.out.println("Sim Ending at cycle: "+this.cycle);
 	}
 
 	public void run_cycle_smt()
 	{
-	//TODO define diff logic for smt	
+		System.out.println("\n\n*******************\n\n");
+		System.out.println("Cycle: "+this.cycle);
+		System.out.println("\n\n*******************\n\n");
+
+		// TODO parameterize this
+		// this also does wb and rob
+		int min_rob_bw = 2;
+		cdb.doCycle(min_rob_bw);
+
+
+		for (Unit unit : units)
+			unit.doCycle();
+
+		issuer.doCycleSMT();
+
+		cdb.clear();
+
+		this.cycle = this.cycle + 1;
 	}
 
 	public static void main(String[] args) 
@@ -141,37 +173,34 @@ public class Simulator
 
 			Simulator simulator = new Simulator();
 
+
 			// Create new memory object (shared between both input programs)
-			Memory memory = new Memory();
+			Memory memory = simulator.mem;
 
 			// Create new instruction cache object for filepath_1
 			InstructionCache instruction_cache_1 = new InstructionCache(simulator.issuer, simulator.pc, 1);
 
-			// Parse file_1 and fill the instruction cache and memory
-			Parser.parseFile(filepath_1, instruction_cache_1, memory, 1);
-
 			// Create new instruction cache object for filepath_2
 			InstructionCache instruction_cache_2 = new InstructionCache(simulator.issuer, simulator.pc, 2);
+
+			// Parse file_1 and fill the instruction cache and memory
+			Parser.parseFile(filepath_1, instruction_cache_1, memory, 1);
 
 			// Parse file_2 and fill the instruction cache and memory
 			Parser.parseFile(filepath_2, instruction_cache_2, memory, 2);
 
 			simulator.issuer =  new Issuer(simulator, 8, 4, simulator.units, simulator.rob, simulator.rob2, simulator.rename_table, simulator.rename_table2, instruction_cache_1, instruction_cache_2, simulator.btb, simulator.btb2, simulator.rf, simulator.rf2);
 			simulator.instruction_cache = instruction_cache_1;
-			simulator.instruction_cache2 = instruction_cache_1;
+			simulator.instruction_cache2 = instruction_cache_2;
 			simulator.instruction_cache.issuer = simulator.issuer;
+			simulator.instruction_cache2.issuer = simulator.issuer;
+
 			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.rob2, simulator.btb, simulator.btb2, simulator.mem, instruction_cache_1, instruction_cache_2);
 
-			// Print Instruction Cache 1
-			System.out.println("Printing instr cache 1");
-			System.out.println(instruction_cache_1.toString());
-
-			// Print Instruction Cache 2
-			System.out.println("Printing instr cache 2");
-			System.out.println(instruction_cache_2.toString());
-
 			// Print Registers
-			
+
+			simulator.run_smt();
+
 			// Print Data Memory
 			System.out.println(memory.toString());
 			
