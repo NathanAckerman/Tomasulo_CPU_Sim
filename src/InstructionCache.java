@@ -11,8 +11,9 @@ public class InstructionCache
 	public Issuer issuer;
 	private Integer pc;
 	public Integer next_pc;
+	public int cache_num;
 
-	public InstructionCache(Issuer issuer, Integer pc)
+	public InstructionCache(Issuer issuer, Integer pc, int cache_num)
 	{
 		instructions = new ArrayList<Instruction>();
 		cache_line = new Instruction[4];
@@ -20,6 +21,7 @@ public class InstructionCache
 		this.issuer = null;
 		this.pc = pc;
 		this.next_pc = null;
+		this.cache_num = cache_num;
 	}
 
 	public String toString()
@@ -81,7 +83,12 @@ public class InstructionCache
 	private int issueInstructions()
 	{
 		//printCacheLine();
-		int num_spots_in_issuer = issuer.getEmptySpots();
+		int num_spots_in_issuer;
+		if (cache_num == 1) {
+			num_spots_in_issuer = issuer.getEmptySpots();
+		} else {
+			num_spots_in_issuer = issuer.getEmptySpots2();
+		}
 		System.out.println("\n\n^^^^^^^^^^^^^^^^^^^^\n");
 		System.out.println("num_spots_in_issuer: "+num_spots_in_issuer);
 		boolean issuing = false;
@@ -122,7 +129,7 @@ public class InstructionCache
 	private boolean pc_in_line(int pc)
 	{
 		for(Instruction instr: cache_line){
-			if( instr != null && instr.address == pc) {//TODO need to decide how pc references are done
+			if( instr != null && instr.address == pc) {
 				return true;
 			}
 		}
@@ -173,32 +180,6 @@ public class InstructionCache
 		}
 	}
 
-
-/*
-	//okay so because java is a garbage language there is no good way to deep copy an object
-	private Instruction cloneInstruction(Instruction orig_instr)
-	{
-		Instruction new_instr = null;
-		try {
-			//serialize
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(orig_instr);
-			oos.flush();
-			oos.close();
-			bos.close();
-			byte[] byteData = bos.toByteArray();
-
-			//unserialize
-			ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
-			new_instr = (Instruction) new ObjectInputStream(bais).readObject();
-		} catch (Exception e) {
-			System.out.println("serialization for instr copy didn't work\n");
-			System.exit(1);
-		}
-		return new_instr;
-	}
-*/
 	private Instruction cloneInstruction(Instruction orig_instr)
 	{
 		Instruction new_instr = new Instruction();
@@ -214,6 +195,7 @@ public class InstructionCache
 		new_instr.immediate = orig_instr.immediate;
 		new_instr.target = orig_instr.target;
 		new_instr.predicted_target = orig_instr.predicted_target;
+		new_instr.threadNum = orig_instr.threadNum;
 		return new_instr;
 	}
 

@@ -3,22 +3,28 @@ import java.lang.IllegalArgumentException;
 
 public class Simulator
 {
-	private int cycle;
+	public int cycle;
 	private Integer pc = 1000;
+	private Integer pc2 = 1000;
 
 	public ArrayList<Unit> units = new ArrayList<Unit>();
 
 	// TODO parameterize these
 	public TomRenameTable rename_table = new TomRenameTable();
+	public TomRenameTable rename_table2 = new TomRenameTable();
 	public Memory mem = new Memory();
 	public RegisterFile rf = new RegisterFile(mem, rename_table);
+	public RegisterFile rf2 = new RegisterFile(mem, rename_table);
 	private CDB cdb = new CDB(4, this);
 	private InstructionKiller instr_killer = new InstructionKiller(this);
 	public ROB rob = new ROB(16, rename_table, instr_killer);
+	public ROB rob2 = new ROB(16, rename_table, instr_killer);
 	public WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
+	private BTB btb2 = new BTB(); 
 	private InstructionEvaluator instr_eval;
 	private InstructionCache instruction_cache;
+	private InstructionCache instruction_cache2;
 
 	public Issuer issuer;
 
@@ -46,40 +52,32 @@ public class Simulator
 		int min_rob_bw = 2;
 		cdb.doCycle(min_rob_bw);
 
-		// TODO move items from wb to cdb
 
-		// TODO get finished instruction from each unit
 		for (Unit unit : units)
 			unit.doCycle();
 
-		issuer.doCycle();
+		issuer.doCycle(4);
 		instruction_cache.doCycle();
 
 		// - needs to be primed for the first cycle of the simluation
-
 		cdb.clear();
 
 		this.cycle = this.cycle + 1;
 	}
 
 	/* Simulates Part 1 */
-	public void run(InstructionCache instruction_cache, Memory memory)
+	public void run()
 	{
-		// TODO fetch instruction from instruction_cache
-		// TODO deal with PC
-
-		run_cycle(); run_cycle();
-
-
+		//need to manually run 2 cycles so that first instructions get into the issuer on cycle 2
+		run_cycle();
+		run_cycle();
 		while(!SimulationDone()) {
 			run_cycle();
 		}
 
-
+		this.rf.printRegisters();
 		System.out.println("\n\n");
 		System.out.println("Sim Ending at cycle: "+this.cycle);
-
-		this.rf.printRegisters();
 
 	}
 
@@ -90,10 +88,23 @@ public class Simulator
 		return this.rob.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
 	}
 
+	public boolean SimulationDoneSMT()
+	{
+		System.out.println("Entries in ROB: "+this.rob.getNumEntries());
+		System.out.println("Entries in ROB2: "+this.rob2.getNumEntries());
+		System.out.println("Entries in Issuer: "+this.issuer.getNumEntries());
+		return this.rob.getNumEntries() == 0 && this.rob2.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
+	}
+
 	/* Simulates Part 2 */
 	public void run_smt(InstructionCache instruction_cache_1, InstructionCache instruction_cache_2, Memory memory)
 	{
-		run_cycle();
+		run_cycle_smt();
+	}
+
+	public void run_cycle_smt()
+	{
+	//TODO define diff logic for smt	
 	}
 
 	public static void main(String[] args) 
@@ -105,16 +116,16 @@ public class Simulator
 
 			Simulator simulator = new Simulator();
 
-			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc);
+			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc, 1);
 			simulator.issuer =  new Issuer(8, 4, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
 			simulator.instruction_cache = instruction_cache;
 			simulator.instruction_cache.issuer = simulator.issuer;
-			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.btb, simulator.mem, instruction_cache);
+			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.rob2, simulator.btb, simulator.btb2, simulator.mem, instruction_cache, null);
 			Memory memory = simulator.mem;
 
-			Parser.parseFile(filepath, instruction_cache, memory);
+			Parser.parseFile(filepath, instruction_cache, memory, 1);
 			System.out.println(instruction_cache);
-			simulator.run(instruction_cache, memory);
+			simulator.run();
 
 			//System.out.println(instruction_cache.toString());
 			System.out.println(memory.toString());
@@ -128,26 +139,36 @@ public class Simulator
 			String filepath_1 = args[0];
 			String filepath_2 = args[1];
 
+			Simulator simulator = new Simulator();
+
 			// Create new memory object (shared between both input programs)
 			Memory memory = new Memory();
 
 			// Create new instruction cache object for filepath_1
-			//InstructionCache instruction_cache_1 = new InstructionCache();
+			InstructionCache instruction_cache_1 = new InstructionCache(simulator.issuer, simulator.pc, 1);
 
 			// Parse file_1 and fill the instruction cache and memory
-			//Parser.parseFile(filepath_1, instruction_cache_1, memory);
+			Parser.parseFile(filepath_1, instruction_cache_1, memory, 1);
 
 			// Create new instruction cache object for filepath_2
-			//InstructionCache instruction_cache_2 = new InstructionCache();
+			InstructionCache instruction_cache_2 = new InstructionCache(simulator.issuer, simulator.pc, 2);
 
 			// Parse file_2 and fill the instruction cache and memory
-			//Parser.parseFile(filepath_2, instruction_cache_2, memory);
+			Parser.parseFile(filepath_2, instruction_cache_2, memory, 2);
+
+			simulator.issuer =  new Issuer(simulator, 8, 4, simulator.units, simulator.rob, simulator.rob2, simulator.rename_table, simulator.rename_table2, instruction_cache_1, instruction_cache_2, simulator.btb, simulator.btb2, simulator.rf, simulator.rf2);
+			simulator.instruction_cache = instruction_cache_1;
+			simulator.instruction_cache2 = instruction_cache_1;
+			simulator.instruction_cache.issuer = simulator.issuer;
+			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.rob2, simulator.btb, simulator.btb2, simulator.mem, instruction_cache_1, instruction_cache_2);
 
 			// Print Instruction Cache 1
-			//System.out.println(instruction_cache_1.toString());
+			System.out.println("Printing instr cache 1");
+			System.out.println(instruction_cache_1.toString());
 
 			// Print Instruction Cache 2
-			//System.out.println(instruction_cache_2.toString());
+			System.out.println("Printing instr cache 2");
+			System.out.println(instruction_cache_2.toString());
 
 			// Print Registers
 			

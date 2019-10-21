@@ -16,7 +16,7 @@ import java.lang.IllegalArgumentException;
 public class Parser 
 {
 
-	public static void parseFile(String path, InstructionCache instruction_cache, Memory memory)
+	public static void parseFile(String path, InstructionCache instruction_cache, Memory memory, int thread_number)
 	{
 
 		HashMap<String, Integer> labels = new HashMap<String, Integer>();
@@ -60,6 +60,7 @@ public class Parser
 				else if(data_start == false)
 				{
 					Instruction instruction = new Instruction();
+					instruction.threadNum = thread_number;
 
 					instruction.setAddress(instructionCacheBaseAddress + cur_instruction_num);
 

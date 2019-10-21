@@ -36,11 +36,9 @@ public class BTB {
 class BTBEntry {
 	int address;
 	int predicted_pc;
-	boolean predict_taken;// is this even necessary?
 
 	BTBEntry(int address, int predicted_pc, boolean predict_taken) {
 		this.address = address;
 		this.predicted_pc = predicted_pc;
-		this.predict_taken = true; //TODO do we default to true or false to start?
 	}
 }

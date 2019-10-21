@@ -1,15 +1,22 @@
 import java.lang.*;
 public class InstructionEvaluator {
 	static ROB rob;
+	static ROB rob2;
 	static BTB btb;
+	static BTB btb2;
 	static Memory mem;
 	//static Integer next_pc;
 	static InstructionCache cache;
-	InstructionEvaluator(ROB the_rob, BTB the_btb, Memory the_mem, InstructionCache the_cache) {
+	static InstructionCache cache2;
+
+	InstructionEvaluator(ROB the_rob, ROB the_rob2, BTB the_btb, BTB the_btb2, Memory the_mem, InstructionCache the_cache, InstructionCache the_cache2) {
 		rob = the_rob;
+		rob2 = the_rob2;
 		btb = the_btb;
+		btb2 = the_btb2;
 		//next_pc = cache.next_pc;
 		cache = the_cache;
+		cache2 = the_cache2;
 		mem = the_mem;
 	}
 
@@ -18,6 +25,9 @@ public class InstructionEvaluator {
 	//note: the casting is done because you cant do bitwise operations on floats
 	public static void eval(Instruction instr)
 	{
+		ROB cur_rob = null;
+		BTB cur_btb = null;
+		InstructionCache cur_cache = null;
 		switch (instr.opcode) {
 			case "and":
 				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() & instr.source_reg2_value.intValue());
@@ -100,41 +110,55 @@ public class InstructionEvaluator {
 				break;
 
 			case "beq":
+				if (instr.threadNum == 1) {
+					cur_rob = rob;
+					cur_btb = btb;
+					cur_cache = cache;
+				} else {
+					cur_rob = rob2;
+					cur_btb = btb2;
+					cur_cache = cache2;
+				}
 				boolean condition_val = (instr.source_reg1_value == instr.immediate);
 				if (condition_val && instr.predicted_target != instr.target) {//predicted not taken but was
-					// TODO get ROB index
-					rob.killInstructionsAfter(instr);
-					btb.updatePrediction(instr.address, instr.target, true);
-					cache.next_pc = instr.target;
+					cur_rob.killInstructionsAfter(instr);
+					cur_btb.updatePrediction(instr.address, instr.target, true);
+					cur_cache.next_pc = instr.target;
 					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
 					System.out.println("Setting pc to: "+cache.next_pc);
 					break;
 				}
 				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
-					// TODO get ROB index
-					rob.killInstructionsAfter(instr);
-					btb.updatePrediction(instr.address, instr.address+1, false);
-					cache.next_pc = instr.address+1;
+					cur_rob.killInstructionsAfter(instr);
+					cur_btb.updatePrediction(instr.address, instr.address+1, false);
+					cur_cache.next_pc = instr.address+1;
 					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
 					System.out.println("Setting pc to: "+cache.next_pc);
 					break;
 				}
-				System.out.println("\n########################\nbranch correctly predicted\n");
 				break;
 
 			case "bne":
+				System.out.println(instr);
+				if (instr.threadNum == 1) {
+					cur_rob = rob;
+					cur_btb = btb;
+					cur_cache = cache;
+				} else {
+					cur_rob = rob2;
+					cur_btb = btb2;
+					cur_cache = cache2;
+				}
 				boolean condition_val2 = (instr.source_reg1_value != instr.immediate);
 				if (condition_val2 && instr.predicted_target != instr.target) {//predicted not taken but was
-					// TODO get ROB index
-					rob.killInstructionsAfter(instr);
-					btb.updatePrediction(instr.address, instr.target, true);
-					cache.next_pc = instr.target;
+					cur_rob.killInstructionsAfter(instr);
+					cur_btb.updatePrediction(instr.address, instr.target, true);
+					cur_cache.next_pc = instr.target;
 					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
 					System.out.println("Setting pc to: "+cache.next_pc);
 					break;
 				}
 				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
-					// TODO get ROB index
 					rob.killInstructionsAfter(instr);
 					btb.updatePrediction(instr.address, instr.address+1, false);
 					cache.next_pc = instr.address+1;
@@ -142,7 +166,6 @@ public class InstructionEvaluator {
 					System.out.println("Setting pc to: "+cache.next_pc);
 					break;
 				}
-				System.out.println("\n########################\nbranch correctly predicted\n");
 				break;
 
 			default:

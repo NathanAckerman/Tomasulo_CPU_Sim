@@ -20,6 +20,7 @@ public class Instruction
 	public boolean invalid;
 	public int issue_id;
 	public boolean completed;
+	public int threadNum;
 
 	public Instruction()
 	{
@@ -72,6 +73,7 @@ public class Instruction
 		result += "source_reg2_renamed_str:" + source_reg2_renamed_str + "\n";
 		result += "source_reg2_value:" + source_reg2_value + "\n";
 		result += "completed: " + completed + "\n";
+		result += "threadNum: " + threadNum + "\n";
 		return result;
 	}
 

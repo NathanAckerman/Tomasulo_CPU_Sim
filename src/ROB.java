@@ -29,11 +29,7 @@ public class ROB
 		if (isFull()) {
 			return -1;
 		}
-
-		System.out.println("Back_i before crashing: " + back_i);
 		queue[back_i] = inst;
-		//System.out.println("\n\n***************Instruction being enqueed in rob at index "+back_i+"\n\n");
-		//System.out.println(inst);
 		if(!(inst.opcode.equals("sd") || inst.opcode.equals("fsd"))) {
 			rename_table.setRename(inst.dest_reg_original_str, back_i, inst);
 		}
@@ -53,7 +49,6 @@ public class ROB
 				break;
 			arr.add(inst);
 		}
-
 		return arr;
 	}
 
@@ -76,14 +71,17 @@ public class ROB
 
 		committedCount++;
 		if (inst.opcode.equals("bne") || inst.opcode.equals("beq")) {
-			instr_killer.sim.issuer.branch_in_pipeline = false;
+			if(inst.threadNum == 1) {
+				instr_killer.sim.issuer.branch_in_pipeline = false;
+			} else {
+				instr_killer.sim.issuer.branch_in_pipeline2 = false;
+			}
 		}
 		return inst;
 	}
 
 	public int queryReadyInstructions()
 	{
-		System.out.println("querying ready instructions: printing rob instrs");
 		int a = 0;
 		for (int i = front_i; a < cur_size; i = incr(i)) {
 			a++;
@@ -101,51 +99,9 @@ public class ROB
 			}
 			c++;
 		}
-		System.out.println("query num rob rdy returned: "+count);
 		return count;
 	}
 
-	/*
-	 * \brief Kill instructions between two addresses
-	 * \param[in] i1 Index of first instruction to kill
-	 * \param[in] i2 Index of last instruction to kill
-	 *
-	 * Removes instructions between i1 and i2, inclusive.
-	 * If i1 is -1, then nothing is removed. If i2 is non-negative
-	 * but i2 is -1, then all instructions from i1 until the end of the
-	 * queue will be killed. If either i1 or i2 are greater than the size
-	 * of the queue, then nothing is removed.
-	 */
-	/*
-	public void killInstructionsBetween(int i1, int i2)
-	{
-		if (i1 >= ROB_SIZE || i2 >= ROB_SIZE)
-			return;
-
-		if (i1 == -1)
-			return;
-
-		int num_killed = 0;
-		int i;
-		for (i = i1; i != (i2 == -1 ? back_i : i2); i = incr(i)) {
-			if (queue[i] != null) {
-				instr_killer.killInstructionAnywhere(queue[i]);
-				rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
-			}
-			queue[i] = null;
-			num_killed++;
-		}
-		if (queue[i] != null) {
-			instr_killer.killInstructionAnywhere(queue[i]);
-			rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
-		}
-		queue[i] = null;
-		num_killed++;
-
-		cur_size -= num_killed;
-		back_i = incr(i);
-	}
-*/
 	public void killInstructionsAfter(Instruction instr)
 	{
 		int num_killed = 0;
@@ -156,12 +112,15 @@ public class ROB
 			if (queue[i] != null) {
 				if (queue[i] == instr) {
 					killing = true;
-					instr_killer.sim.issuer.killInstr();
+					if(instr.threadNum == 1) {
+						instr_killer.sim.issuer.killInstr();
+					} else {
+						instr_killer.sim.issuer.killInstr2();
+					}
 					inst_is_branch = true;
 				}
 				if (killing && !inst_is_branch) {
 					instr_killer.killInstructionAnywhere(queue[i]);
-					//rename_table.removeRename(queue[i].dest_reg_original_str, queue[i]);
 					queue[i] = null;
 					num_killed++;
 					back_i = decr(back_i);
@@ -172,7 +131,6 @@ public class ROB
 			}
 		}
 		cur_size -= num_killed;
-		//front_i = front_i + num_killed % ROB_SIZE;
 	}
 
 	public boolean isFull() { return cur_size == ROB_SIZE; }
