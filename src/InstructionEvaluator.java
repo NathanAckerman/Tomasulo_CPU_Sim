@@ -36,11 +36,19 @@ public class InstructionEvaluator {
 				break;
 
 			case "slt":
-				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() << instr.source_reg2_value.intValue());
+				if (instr.source_reg1_value.intValue() < instr.source_reg2_value.intValue()) {
+					instr.dest_reg_value = (float)1;
+				} else {
+					instr.dest_reg_value = (float)0;
+				}
 				break;
 
 			case "slti":
-				instr.dest_reg_value = (float) (instr.source_reg1_value.intValue() << instr.immediate);
+				if (instr.source_reg1_value.intValue() < instr.immediate) {
+					instr.dest_reg_value = (float)1;
+				} else {
+					instr.dest_reg_value = (float)0;
+				}
 				break;
 
 			case "add":
