@@ -37,7 +37,7 @@ public class WB
         // Grabbing count instructions
         for(int i = 0; i < count; i++){
             Instruction instr = readiedInstructions.get(i);
-	    System.out.println("wb stage completed instr");
+	        System.out.println("wb stage completed instr");
             instr.completed = true;
             instructionsToPush.add(instr);
         }
