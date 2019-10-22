@@ -45,9 +45,6 @@ public class Simulator
 
 	private void run_cycle()
 	{
-		System.out.println("\n\n*******************\n\n");
-		System.out.println("Cycle: "+this.cycle);
-		System.out.println("\n\n*******************\n\n");
 		
 		// TODO parameterize this
 		// this also does wb and rob
@@ -84,16 +81,11 @@ public class Simulator
 
 	public boolean SimulationDone()
 	{
-		System.out.println("Entries in ROB: "+this.rob.getNumEntries());
-		System.out.println("Entries in Issuer: "+this.issuer.getNumEntries());
 		return this.rob.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
 	}
 
 	public boolean SimulationDoneSMT()
 	{
-		System.out.println("Entries in ROB: "+this.rob.getNumEntries());
-		System.out.println("Entries in ROB2: "+this.rob2.getNumEntries());
-		System.out.println("Entries in Issuer: "+this.issuer.getNumEntries());
 		return this.rob.getNumEntries() == 0 && this.rob2.getNumEntries() == 0 && this.issuer.getNumEntries() == 0;
 	}
 
@@ -104,17 +96,12 @@ public class Simulator
 		run_cycle_smt();
 
 		while(!SimulationDoneSMT()){
-			if(this.cycle == 1000){
-				System.out.println("here");
-				ReservationStationStatusTable.isReservationStationFull(UnitName.INT);
-			}
 			run_cycle_smt();
 		}
-
-		System.out.println("Register file 1");
+		System.out.println("Thread 1");
 		this.rf.printRegisters();
 		System.out.println("-------------------");
-		System.out.println("Register file 2");
+		System.out.println("\n\nThread 2");
 		this.rf2.printRegisters();
 		System.out.println("-------------------");
 
@@ -123,10 +110,6 @@ public class Simulator
 
 	public void run_cycle_smt()
 	{
-		System.out.println("\n\n*******************\n\n");
-		System.out.println("Cycle: "+this.cycle);
-		System.out.println("\n\n*******************\n\n");
-
 		// this also does wb and rob
 		int min_rob_bw = Config.NB/2;
 		cdb.doCycle(min_rob_bw);
@@ -206,10 +189,10 @@ public class Simulator
 
 			// Print Data Memory
 			System.out.println(memory.toString());
-			System.out.println("Total committed instructions for rob1: " + simulator.rob.committedCount);
-			System.out.println("Total committed instructions for rob2: " + simulator.rob2.committedCount);
+			System.out.println("Total committed instructions for Thread 1: " + simulator.rob.committedCount);
+			System.out.println("Total committed instructions for Thread 2: " + simulator.rob2.committedCount);
 
-			System.out.println("Cycle count is: " + simulator.cycle);
+			System.out.println("Total cycle count: " + simulator.cycle);
 			
 		}
 

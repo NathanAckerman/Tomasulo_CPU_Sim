@@ -124,22 +124,17 @@ public class InstructionEvaluator {
 					cur_rob.killInstructionsAfter(instr);
 					cur_btb.updatePrediction(instr.address, instr.target, true);
 					cur_cache.next_pc = instr.target;
-					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
-					System.out.println("Setting pc to: "+cur_cache.next_pc);
 					break;
 				}
 				if (!condition_val && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					cur_rob.killInstructionsAfter(instr);
 					cur_btb.updatePrediction(instr.address, instr.address+1, false);
 					cur_cache.next_pc = instr.address+1;
-					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
-					System.out.println("Setting pc to: "+cur_cache.next_pc);
 					break;
 				}
 				break;
 
 			case "bne":
-				System.out.println(instr);
 				if (instr.threadNum == 1) {
 					cur_rob = rob;
 					cur_btb = btb;
@@ -154,16 +149,12 @@ public class InstructionEvaluator {
 					cur_rob.killInstructionsAfter(instr);
 					cur_btb.updatePrediction(instr.address, instr.target, true);
 					cur_cache.next_pc = instr.target;
-					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
-					System.out.println("Setting pc to: "+cur_cache.next_pc);
 					break;
 				}
 				if (!condition_val2 && instr.predicted_target != instr.address+1) {//predicted taken but wasnt
 					cur_rob.killInstructionsAfter(instr);
 					cur_btb.updatePrediction(instr.address, instr.address+1, false);
 					cur_cache.next_pc = instr.address+1;
-					System.out.println("\n@@@@@@@@@@@@@@@@@@@@@\nBranch mispredict\n\n");
-					System.out.println("Setting pc to: "+cur_cache.next_pc);
 					break;
 				}
 				break;

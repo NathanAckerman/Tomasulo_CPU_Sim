@@ -42,7 +42,6 @@ public class Unit {
         }
 
         Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(this.unitName);
-        System.out.println("the ready instruction in " + this.unitName + " is " + readyInstruction);
         boolean succeeded = shiftPipelineRight(readyInstruction);
         if (!succeeded) {
             System.out.println("Error This should never happen.");

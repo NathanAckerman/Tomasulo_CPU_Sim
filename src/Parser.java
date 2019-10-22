@@ -248,7 +248,6 @@ public class Parser
 					{
 						instruction.setSourceReg1(Integer.parseInt(splitted[0].split("")[1]));
 						instruction.setImmediate(Integer.parseInt(splitted[1].replace("$", "")));
-						System.out.println("asd");
 						instruction.setTarget(labels.get(splitted[2]));
 						instruction.source_reg1_original_str = splitted[0];
 					}

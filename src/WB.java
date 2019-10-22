@@ -26,9 +26,6 @@ public class WB
         for(Unit u: units){
             Instruction[] pipeline = u.pipeline;
             Instruction readied = pipeline[pipeline.length - 1];
-            if(readied != null && readied.opcode.equals("or") && readied.address == 1010){
-                System.out.println("Here");
-            }
             if(readied != null){
                 readiedInstructions.add(readied);
             }
@@ -40,7 +37,6 @@ public class WB
         // Grabbing count instructions
         for(int i = 0; i < count; i++){
             Instruction instr = readiedInstructions.get(i);
-	        System.out.println("wb stage completed instr");
             instr.completed = true;
             instructionsToPush.add(instr);
         }
@@ -76,7 +72,6 @@ public class WB
                 numReadied +=1;
             }
         }
-        System.out.println("WB has " + numReadied + " instructions");
         return numReadied;
     }
 }

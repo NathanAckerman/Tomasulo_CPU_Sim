@@ -41,7 +41,6 @@ public class ROB
 
 	public ArrayList<Instruction> dequeue(int count)
 	{
-		System.out.println("dequeue count: "+count);
 		ArrayList<Instruction> arr = new ArrayList<Instruction>();
 		for (int i = 0; i < count; i++) {
 			Instruction inst = dequeue();

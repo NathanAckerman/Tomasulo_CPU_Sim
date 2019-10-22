@@ -103,7 +103,7 @@ public class RegisterFile
             case "sub": {
                 if(!setIntFirstRegisterValue(i) || !setIntSecondRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 2");      
-		    System.exit(1);
+		            System.exit(1);
                 } 
 
                 break;
@@ -114,7 +114,7 @@ public class RegisterFile
             case "fmul": case "fdiv": {
                 if(!setFPFirstRegisterValue(i) || !setFPSecondRegisterValue(i)) {
                     System.out.println(i.toString() + "produced an error 4");      
-		    System.exit(1);
+		            System.exit(1);
                 }  
                 break;
             }
@@ -127,7 +127,6 @@ public class RegisterFile
 
     public boolean commit(Instruction i) {
 
-	System.out.println("Committing instruction:" + i);
         String opcode = i.getOpcode();
 
         switch (opcode) {
@@ -307,8 +306,7 @@ public class RegisterFile
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void printRegisters()
     {
-        System.out.println("\n\n\n\n\n*************************");
-        System.out.println("Printing Integer Registers Value:");
+        System.out.println("\nPrinting Integer Registers Value:");
 
         for(int i = 0; i< intRegisters.size(); i++ ){
             String key = "R" + i;

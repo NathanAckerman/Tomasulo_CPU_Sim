@@ -54,45 +54,32 @@ public class InstructionCache
 			pc = next_pc;
 			next_pc = null;
 		}
-
-		System.out.println("\n\n////////////////////////\n");
-		System.out.println("In cache doCycle()");
-		System.out.println("num_left_unissued = "+num_instr_in_left_unissued);
-		System.out.println("pc is "+pc);
 		int totalIssued = 0;
 		if (instr_left_in_line() && pc_in_line(pc)) {
-			System.out.println("instrs left in line including pc");
 			totalIssued = issueInstructions();
 		} else {
-			System.out.println("need new cacheline");
 			get_cache_line_with_pc(pc);
 			totalIssued = issueInstructions();
 		}
-		System.out.println("instr sent to issuer this cycle: "+totalIssued);
+
 		num_instr_in_left_unissued -= totalIssued;
 		if (next_pc == null) {
-			System.out.println("next pc was null");
 			pc = pc + totalIssued;
 		} else {
-			System.out.println("next pc was set so need to grab that");
-			System.out.println("next pc is: "+next_pc);
 			pc = next_pc;
-			next_pc = null;//will this cause any problems when killing since we already killed?
-			//maybe we should just update the pc this cycle??
+			next_pc = null;
 		}
 	}
 
 	private int issueInstructions()
 	{
-		//printCacheLine();
+
 		int num_spots_in_issuer;
 		if (cache_num == 1) {
 			num_spots_in_issuer = issuer.getEmptySpots();
 		} else {
 			num_spots_in_issuer = issuer.getEmptySpots2();
 		}
-		System.out.println("\n\n^^^^^^^^^^^^^^^^^^^^\n");
-		System.out.println("num_spots_in_issuer: "+num_spots_in_issuer);
 		boolean issuing = false;
 		int num_sent = 0;
 		for (Instruction instr : cache_line) {
@@ -107,7 +94,6 @@ public class InstructionCache
 					break;
 				}
 				if (issuer.enqueueInstruction(cloneInstruction(instr))) {
-					System.out.println("\n\nInstruction Going To Issuer From Cache " + cache_num + ":\n"+instr);
 					num_sent++;
 				}
 				
@@ -149,7 +135,6 @@ public class InstructionCache
 
 		for (int i = 0; i < nf; i++) {
 			int cache_index = ((pc-BASE_ADDR+i)%nf);
-			System.out.println("cache index "+cache_index+" instr "+(pc+i));
 			cache_line[cache_index] = findInstruction(pc+i);
 		}
 		num_instr_in_left_unissued = nf - ((pc-BASE_ADDR) % nf);
