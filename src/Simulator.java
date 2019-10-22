@@ -146,6 +146,7 @@ public class Simulator
 
 	public static void main(String[] args) 
 	{
+		Config.readFile();
 		if (args.length == 0) {
 			throw new IllegalArgumentException("No test file passed to the simulator!");
 		} else if (args.length == 1) {

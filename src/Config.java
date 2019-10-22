@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public final class Config {
@@ -14,8 +15,9 @@ public final class Config {
     private Config() {
     }
 
-    public static void readFile(String filename) {
+    public static void readFile() {
         try{
+            String filename = "TomasuloSimulator.config";
             Scanner reader = new Scanner(new File(filename));
 
             while(reader.hasNext()){
@@ -45,6 +47,9 @@ public final class Config {
                 }
             }
             reader.close();
+        }catch(FileNotFoundException e){
+            System.out.println("Please ensure that you have file TomasuloSimulator.config in the correct directory");
+            System.exit(1);
         }catch(Exception e){
             System.out.println(e);
             System.exit(1);
