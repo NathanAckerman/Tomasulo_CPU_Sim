@@ -7,6 +7,8 @@ public class Simulator
 	private Integer pc = 1000;
 	private Integer pc2 = 1000;
 
+	private int nf = 2;
+
 	public ArrayList<Unit> units = new ArrayList<Unit>();
 
 	// TODO parameterize these
@@ -153,7 +155,7 @@ public class Simulator
 
 			Simulator simulator = new Simulator();
 
-			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc, 1);
+			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc, 1, simulator.nf);
 			simulator.issuer =  new Issuer(8, 4, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
 			simulator.instruction_cache = instruction_cache;
 			simulator.instruction_cache.issuer = simulator.issuer;
@@ -183,10 +185,10 @@ public class Simulator
 			Memory memory = simulator.mem;
 
 			// Create new instruction cache object for filepath_1
-			InstructionCache instruction_cache_1 = new InstructionCache(simulator.issuer, simulator.pc, 1);
+			InstructionCache instruction_cache_1 = new InstructionCache(simulator.issuer, simulator.pc, 1, simulator.nf);
 
 			// Create new instruction cache object for filepath_2
-			InstructionCache instruction_cache_2 = new InstructionCache(simulator.issuer, simulator.pc, 2);
+			InstructionCache instruction_cache_2 = new InstructionCache(simulator.issuer, simulator.pc, 2, simulator.nf);
 
 			// Parse file_1 and fill the instruction cache and memory
 			Parser.parseFile(filepath_1, instruction_cache_1, memory, 1);

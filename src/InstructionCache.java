@@ -12,11 +12,13 @@ public class InstructionCache
 	private Integer pc;
 	public Integer next_pc;
 	public int cache_num;
+	public int nf;//NF
 
-	public InstructionCache(Issuer issuer, Integer pc, int cache_num)
+	public InstructionCache(Issuer issuer, Integer pc, int cache_num, int nf)
 	{
 		instructions = new ArrayList<Instruction>();
-		cache_line = new Instruction[4];
+		this.nf = nf;
+		cache_line = new Instruction[nf];
 		num_instr_in_left_unissued = 0;
 		this.issuer = null;
 		this.pc = pc;
@@ -144,37 +146,18 @@ public class InstructionCache
 	private void get_cache_line_with_pc(int pc) {
 		Instruction pc_instr = findInstruction(pc);
 		clear_cacheline();
-	
-		if ((pc-BASE_ADDR) % 4 == 0 ) {
-			cache_line[0] = pc_instr;
-			cache_line[1] = findInstruction(pc+1);
-			cache_line[2] = findInstruction(pc+2);
-			cache_line[3] = findInstruction(pc+3);
-			num_instr_in_left_unissued = 4;
-		} else if ((pc-BASE_ADDR) % 4 == 1) {
-			cache_line[0] = findInstruction(pc-1);
-			cache_line[1] = pc_instr;
-			cache_line[2] = findInstruction(pc+1);
-			cache_line[3] = findInstruction(pc+2);
-			num_instr_in_left_unissued = 3;
-		} else if ((pc-BASE_ADDR) % 4 == 2) {
-			cache_line[0] = findInstruction(pc-2);
-			cache_line[1] = findInstruction(pc-1);
-			cache_line[2] = pc_instr;
-			cache_line[3] = findInstruction(pc+1);
-			num_instr_in_left_unissued = 2;
-		} else if ((pc-BASE_ADDR) % 4 == 3) {
-			cache_line[0] = findInstruction(pc-3);
-			cache_line[1] = findInstruction(pc-2);
-			cache_line[2] = findInstruction(pc-1);
-			cache_line[3] = pc_instr;
-			num_instr_in_left_unissued = 1;
+
+		for (int i = 0; i < nf; i++) {
+			int cache_index = ((pc-BASE_ADDR+i)%nf);
+			System.out.println("cache index "+cache_index+" instr "+(pc+i));
+			cache_line[cache_index] = findInstruction(pc+i);
 		}
+		num_instr_in_left_unissued = nf - ((pc-BASE_ADDR) % nf);
 	}
 
 	private void clear_cacheline()
 	{
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < nf; i++)
 		{
 			cache_line[i] = null;
 		}
