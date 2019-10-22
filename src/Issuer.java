@@ -102,7 +102,7 @@ public class Issuer {
 		int num_issued = 0;
 		while (queue2.size() > 0 && num_issued < thread_issue_cap && num_issued < issue_limit && !rob2.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue2.peek()))) {
 			Instruction head = queue2.peek();
-			if(head != null && (head.opcode.equals("bne") || head.opcode.equals("beq")) && branch_in_pipeline) {
+			if(head != null && (head.opcode.equals("bne") || head.opcode.equals("beq")) && branch_in_pipeline2) {
 				return num_issued;
 			}
 			issueHeadInstr2();	
@@ -147,10 +147,6 @@ public class Issuer {
 	private void issueHeadInstr() {
 		Instruction head = queue.remove();
 
-		if(head != null && head.address == 1010){
-			System.out.println("Here");
-		}
-
 		if (head.threadNum != 1) {
 			System.out.println("Uhh Ohh an instr got into the wrong issuer (1)");
 			System.exit(1);
@@ -161,9 +157,6 @@ public class Issuer {
 		Integer rename_s1 = rename_table.getRename(head.source_reg1_original_str);
 		Integer rename_s2 = rename_table.getRename(head.source_reg2_original_str);
 
-		if(head != null && head.address == 1010){
-			System.out.println("Here");
-		}
 		int rob_index = rob.enqueue(head);
 
 		if (!(head.opcode.equals("fsd") || head.opcode.equals("sd") || head.opcode.equals("bne") || head.opcode.equals("beq"))) {
@@ -203,9 +196,7 @@ public class Issuer {
 	//check if the instr at the head of this queue is runnable (has a reservation station)
 	private void issueHeadInstr2() {
 		Instruction head = queue2.remove();
-		if(head != null && head.address == 1010){
-			System.out.println("Here");
-		}
+
 		if (head.threadNum != 2) {
 			System.out.println("Uhh Ohh an instr got into the wrong issuer (2)");
 			System.exit(1);

@@ -104,7 +104,7 @@ public class Simulator
 		run_cycle_smt();
 
 		while(!SimulationDoneSMT()){
-			if(this.cycle == 12){
+			if(this.cycle == 1000){
 				System.out.println("here");
 				ReservationStationStatusTable.isReservationStationFull(UnitName.INT);
 			}

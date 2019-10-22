@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.LinkedList;
 public class TomRenameTable {
-	static HashMap<String, LinkedList<RenameEntry>> hm;
+	public HashMap<String, LinkedList<RenameEntry>> hm;
 
 
 	TomRenameTable() 
