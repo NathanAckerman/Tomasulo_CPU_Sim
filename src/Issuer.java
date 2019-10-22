@@ -311,7 +311,11 @@ public class Issuer {
 
 	public int getNumEntries()
 	{
-		return queue.size() + queue2.size();
+		int total = queue.size();
+		if (queue2 != null) {
+			total += queue2.size();
+		}
+		return total;
 	}
 
 
