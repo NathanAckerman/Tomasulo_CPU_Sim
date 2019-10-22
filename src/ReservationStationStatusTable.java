@@ -2,8 +2,8 @@ import java.util.*;
 
 public final class ReservationStationStatusTable {
 
-    private static HashMap<UnitName, ArrayList<Instruction>> stationMap = new HashMap<>();
-    private static HashMap<UnitName, Integer> stationSizeMap = new HashMap<>();
+    public static HashMap<UnitName, ArrayList<Instruction>> stationMap = new HashMap<>();
+    public static HashMap<UnitName, Integer> stationSizeMap = new HashMap<>();
 
     // No one can instantiate this class
     private ReservationStationStatusTable() {
@@ -27,11 +27,11 @@ public final class ReservationStationStatusTable {
         if (stationMap.get(unitName).size() == stationSizeMap.get(unitName).intValue())
             return false;
 
-        stationMap.get(unitName).add(i);
+        boolean successful = stationMap.get(unitName).add(i);
 
         // Do some renaming here for source registers in order to store it into Station
         // object
-        return true;
+        return successful;
     }
 
     // If there is a station that is ready (meaning an instruction that has all of

@@ -22,6 +22,7 @@ public class Unit {
      * \return true on success and fall otherwise (stalling)
      */
     public boolean shiftPipelineRight(Instruction instruction) {
+
         if (this.pipeline[this.pipeline.length - 1] != null) {
             return false; // stalling
         }
@@ -36,11 +37,16 @@ public class Unit {
     }
 
     public void doCycle() {
+        if (this.pipeline[this.pipeline.length - 1] != null) {
+            return; // stalling
+        }
+
         Instruction readyInstruction = ReservationStationStatusTable.getNextReadyInstruction(this.unitName);
         System.out.println("the ready instruction in " + this.unitName + " is " + readyInstruction);
         boolean succeeded = shiftPipelineRight(readyInstruction);
         if (!succeeded) {
-            System.out.println(this.unitName + " is stalling");
+            System.out.println("Error This should never happen.");
+            System.exit(1);
             return;
         }
 

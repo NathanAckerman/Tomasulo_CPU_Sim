@@ -26,6 +26,9 @@ public class WB
         for(Unit u: units){
             Instruction[] pipeline = u.pipeline;
             Instruction readied = pipeline[pipeline.length - 1];
+            if(readied != null && readied.opcode.equals("or") && readied.address == 1010){
+                System.out.println("Here");
+            }
             if(readied != null){
                 readiedInstructions.add(readied);
             }

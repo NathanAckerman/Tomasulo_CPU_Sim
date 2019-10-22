@@ -12,13 +12,14 @@ public class Simulator
 	// TODO parameterize these
 	public TomRenameTable rename_table = new TomRenameTable();
 	public TomRenameTable rename_table2 = new TomRenameTable();
+	public HashMap<UnitName, ArrayList<Instruction>> reservationStations = ReservationStationStatusTable.stationMap;
 	public Memory mem = new Memory();
 	public RegisterFile rf = new RegisterFile(mem, rename_table);
-	public RegisterFile rf2 = new RegisterFile(mem, rename_table);
+	public RegisterFile rf2 = new RegisterFile(mem, rename_table2);
 	private CDB cdb = new CDB(4, this);
 	private InstructionKiller instr_killer = new InstructionKiller(this);
 	public ROB rob = new ROB(16, rename_table, instr_killer);
-	public ROB rob2 = new ROB(16, rename_table, instr_killer);
+	public ROB rob2 = new ROB(16, rename_table2, instr_killer);
 	public WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
 	private BTB btb2 = new BTB(); 
@@ -103,6 +104,10 @@ public class Simulator
 		run_cycle_smt();
 
 		while(!SimulationDoneSMT()){
+			if(this.cycle == 12){
+				System.out.println("here");
+				ReservationStationStatusTable.isReservationStationFull(UnitName.INT);
+			}
 			run_cycle_smt();
 		}
 
@@ -203,7 +208,8 @@ public class Simulator
 
 			// Print Data Memory
 			System.out.println(memory.toString());
-			
+			System.out.println("Total committed instructions for rob1: " + simulator.rob.committedCount);
+			System.out.println("Total committed instructions for rob2: " + simulator.rob2.committedCount);
 
 			// Print cycle count and other information
 			

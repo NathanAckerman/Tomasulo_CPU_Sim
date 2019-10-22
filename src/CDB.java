@@ -129,7 +129,7 @@ public class CDB {
 			}
 
 			ArrayList<Instruction> robs_instrs = sim.rob.dequeue(bw_for_rob1);
-			robs_instrs.addAll(sim.rob.dequeue(bw_for_rob2));
+			robs_instrs.addAll(sim.rob2.dequeue(bw_for_rob2));
 
 			for (Instruction inst : robs_instrs) {
 				if (inst.threadNum == 1) {

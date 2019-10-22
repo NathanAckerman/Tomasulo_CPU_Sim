@@ -105,7 +105,7 @@ public class InstructionCache
 					break;
 				}
 				if (issuer.enqueueInstruction(cloneInstruction(instr))) {
-					System.out.println("\n\nInstruction Going To Issuer From Cache:\n"+instr);
+					System.out.println("\n\nInstruction Going To Issuer From Cache " + cache_num + ":\n"+instr);
 					num_sent++;
 				}
 				

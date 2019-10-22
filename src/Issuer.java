@@ -131,15 +131,26 @@ public class Issuer {
 		int q_size = queue.size();
 		int q2_size = queue2.size();
 		if (q_size > q2_size) {
-			fetcher.doCycle();		
-		} else {
 			fetcher2.doCycle();
+		} else if (q_size == q2_size) {
+			if (sim.cycle % 2 == 0) {
+				fetcher2.doCycle();
+			} else {
+				fetcher.doCycle();
+			}
+		} else {
+			fetcher.doCycle();
 		}
 	}
 
 	//check if the instr at the head of this queue is runnable (has a reservation station)
 	private void issueHeadInstr() {
 		Instruction head = queue.remove();
+
+		if(head != null && head.address == 1010){
+			System.out.println("Here");
+		}
+
 		if (head.threadNum != 1) {
 			System.out.println("Uhh Ohh an instr got into the wrong issuer (1)");
 			System.exit(1);
@@ -150,6 +161,9 @@ public class Issuer {
 		Integer rename_s1 = rename_table.getRename(head.source_reg1_original_str);
 		Integer rename_s2 = rename_table.getRename(head.source_reg2_original_str);
 
+		if(head != null && head.address == 1010){
+			System.out.println("Here");
+		}
 		int rob_index = rob.enqueue(head);
 
 		if (!(head.opcode.equals("fsd") || head.opcode.equals("sd") || head.opcode.equals("bne") || head.opcode.equals("beq"))) {
@@ -176,7 +190,11 @@ public class Issuer {
 		}
 
 		regfile.read(head);
-		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
+		boolean success = ReservationStationStatusTable.addInstructionToStation(unit_name, head);
+		if(!success){
+			System.out.println("Error");
+			System.exit(1);
+		}
 		if(head.opcode.equals("beq") || head.opcode.equals("bne")) {
 			branch_in_pipeline = true;
 		}
@@ -185,6 +203,9 @@ public class Issuer {
 	//check if the instr at the head of this queue is runnable (has a reservation station)
 	private void issueHeadInstr2() {
 		Instruction head = queue2.remove();
+		if(head != null && head.address == 1010){
+			System.out.println("Here");
+		}
 		if (head.threadNum != 2) {
 			System.out.println("Uhh Ohh an instr got into the wrong issuer (2)");
 			System.exit(1);
@@ -221,7 +242,11 @@ public class Issuer {
 		}
 
 		regfile2.read(head);
-		ReservationStationStatusTable.addInstructionToStation(unit_name, head);
+		boolean success = ReservationStationStatusTable.addInstructionToStation(unit_name, head);
+		if(!success){
+			System.out.println("Error2");
+			System.exit(1);
+		}
 		if(head.opcode.equals("beq") || head.opcode.equals("bne")) {
 			branch_in_pipeline2 = true;
 		}
