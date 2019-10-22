@@ -22,8 +22,9 @@ public class Issuer {
 	public boolean branch_in_pipeline2 = false;
 	public Simulator sim;
 
-	Issuer(int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob, TomRenameTable the_rename_table, InstructionCache the_fetcher, BTB the_btb, RegisterFile regfile)
+	Issuer(Simulator the_sim, int size, int issue_num, ArrayList<Unit> unit_arr, ROB rob, TomRenameTable the_rename_table, InstructionCache the_fetcher, BTB the_btb, RegisterFile regfile)
 	{
+		sim = the_sim;
 		queue = new LinkedList<Instruction>();
 		size_limit = size;
 		issue_limit = issue_num;
@@ -86,20 +87,47 @@ public class Issuer {
 	public int doCycle(int thread_issue_cap)
 	{
 		int num_issued = 0;
+
+		if(queue.peek() != null && ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))){
+			this.sim.stalled_due_to_reservation_full +=1;
+		}
+
+		if(rob.isFull()){
+			this.sim.stall_due_to_rob1_full +=1;
+		}
+
 		while (queue.size() > 0 && num_issued < thread_issue_cap && num_issued < issue_limit && !rob.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))) {
 			Instruction head = queue.peek();
 			if(head != null && (head.opcode.equals("bne") || head.opcode.equals("beq")) && branch_in_pipeline) {
 				return num_issued;
 			}
 			issueHeadInstr();	
+
 			num_issued++;
+			if(queue.peek() != null && ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))){
+				this.sim.stalled_due_to_reservation_full +=1;
+			}
+			if(rob.isFull()){
+				this.sim.stall_due_to_rob1_full +=1;
+			}
 		}
+
+
 		return num_issued;
 	}
 
 	public int doCycle2(int thread_issue_cap)
 	{
 		int num_issued = 0;
+
+		if(queue.peek() != null && ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))){
+				this.sim.stalled_due_to_reservation_full +=1;
+		}
+
+		if(rob.isFull()){
+				this.sim.stall_due_to_rob2_full +=1;
+		}
+
 		while (queue2.size() > 0 && num_issued < thread_issue_cap && num_issued < issue_limit && !rob2.isFull() && !ReservationStationStatusTable.isReservationStationFull(getUnitName(queue2.peek()))) {
 			Instruction head = queue2.peek();
 			if(head != null && (head.opcode.equals("bne") || head.opcode.equals("beq")) && branch_in_pipeline2) {
@@ -107,7 +135,15 @@ public class Issuer {
 			}
 			issueHeadInstr2();	
 			num_issued++;
+
+			if(queue.peek() != null && ReservationStationStatusTable.isReservationStationFull(getUnitName(queue.peek()))){
+				this.sim.stalled_due_to_reservation_full +=1;
+			}
+			if(rob2.isFull()){
+				this.sim.stall_due_to_rob2_full +=1;
+			}
 		}
+
 		return num_issued;
 	}
 
@@ -252,6 +288,7 @@ public class Issuer {
 
 	private UnitName getUnitName(Instruction instr)
 	{
+
 		switch (instr.opcode) {
 			case "and":
 			case "andi":

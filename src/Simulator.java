@@ -4,13 +4,16 @@ import java.lang.IllegalArgumentException;
 public class Simulator
 {
 	public int cycle;
+	public int stalled_due_to_reservation_full = 0;
+	public int stall_due_to_rob1_full = 0;
+	public int stall_due_to_rob2_full = 0;
+
 	private Integer pc = 1000;
 	private Integer pc2 = 1000;
 
 
 	public ArrayList<Unit> units = new ArrayList<Unit>();
 
-	// TODO parameterize these
 	public TomRenameTable rename_table = new TomRenameTable();
 	public TomRenameTable rename_table2 = new TomRenameTable();
 	public HashMap<UnitName, ArrayList<Instruction>> reservationStations = ReservationStationStatusTable.stationMap;
@@ -136,7 +139,7 @@ public class Simulator
 			Simulator simulator = new Simulator();
 
 			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc, 1, Config.NF);
-			simulator.issuer =  new Issuer(Config.NI, Config.NW, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
+			simulator.issuer =  new Issuer(simulator, Config.NI, Config.NW, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
 			simulator.instruction_cache = instruction_cache;
 			simulator.instruction_cache.issuer = simulator.issuer;
 			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.rob2, simulator.btb, simulator.btb2, simulator.mem, instruction_cache, null);
@@ -148,6 +151,8 @@ public class Simulator
 
 			System.out.println(memory.toString());
 			System.out.println("Total committed instructions: " + simulator.rob.committedCount);
+			System.out.println("Stalls due to Reservation Station being full: " + simulator.stalled_due_to_reservation_full);
+			System.out.println("Stalls due to ROB1 being full: " + simulator.stall_due_to_rob1_full);
 			System.out.println("Cycle count is: " + simulator.cycle);
 
 		} else if (args.length == 2) {
@@ -191,7 +196,9 @@ public class Simulator
 			System.out.println(memory.toString());
 			System.out.println("Total committed instructions for Thread 1: " + simulator.rob.committedCount);
 			System.out.println("Total committed instructions for Thread 2: " + simulator.rob2.committedCount);
-
+			System.out.println("Issue Stalls due to Reservation Station being full: " + simulator.stalled_due_to_reservation_full);
+			System.out.println("Issue Stalls due to ROB1 being full: " + simulator.stall_due_to_rob1_full);
+			System.out.println("Issue Stalls due to ROB2 being full: " + simulator.stall_due_to_rob2_full);
 			System.out.println("Total cycle count: " + simulator.cycle);
 			
 		}
