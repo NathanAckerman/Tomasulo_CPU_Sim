@@ -257,22 +257,16 @@ public class RegisterFile
     }
 
     public boolean pushToIntRegistersRenamed(Instruction i) {
-        if (intRegistersRenamed.size() < 8 || intRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
-            intRegistersRenamed.put(i.dest_reg_renamed_str, i.dest_reg_value.intValue());
-            return true;
-        }
+        intRegistersRenamed.put(i.dest_reg_renamed_str, i.dest_reg_value.intValue());
+        return true;
 
-        return false;
     }
 
     public boolean pushToFPRegistersRenamed(Instruction i) {
-        if (fpRegistersRenamed.size() < 8 || fpRegistersRenamed.containsKey(i.dest_reg_renamed_str)) {
-            fpRegistersRenamed.put(i.dest_reg_renamed_str, i.dest_reg_value);
-            return true;
-        }
-
-        return false;
+        fpRegistersRenamed.put(i.dest_reg_renamed_str, i.dest_reg_value);
+        return true;
     }
+
 
     public boolean CommitToIntRegisters(Instruction i) {
 
@@ -313,23 +307,23 @@ public class RegisterFile
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void printRegisters()
     {
-	Iterator hm_iter2 = intRegisters.entrySet().iterator();
-	while (hm_iter2.hasNext()) {
-		Map.Entry pair = (Map.Entry)hm_iter2.next();
-		int int_val = (int)pair.getValue();
-		String int_reg = (String)pair.getKey();
-		System.out.println("Reg: "+int_reg+"    val: "+Integer.toString(int_val));
-	}
-	
-	System.out.println("\n\n");
+        System.out.println("\n\n\n\n\n*************************");
+        System.out.println("Printing Integer Registers Value:");
 
-	Iterator hm_iter = fpRegisters.entrySet().iterator();
-	while (hm_iter.hasNext()) {
-		Map.Entry pair = (Map.Entry)hm_iter.next();
-		Float f_val = (float)pair.getValue();
-		String f_reg = (String)pair.getKey();
-		System.out.println("Reg: "+f_reg+"    val: "+Float.toString(f_val));
-	}
+        for(int i = 0; i< intRegisters.size(); i++ ){
+            String key = "R" + i;
+            Integer value = intRegisters.get(key);
+            System.out.println(key + ": " + value);
+        }
+        
+        System.out.println("\n\n");
+        System.out.println("Printing Floating Point Registers Value:");
+
+        for(int i = 0; i< fpRegisters.size(); i++ ){
+            String key = "F" + i;
+            Float value = fpRegisters.get(key);
+            System.out.println(key + ": " + value);
+        }
     }
 
 

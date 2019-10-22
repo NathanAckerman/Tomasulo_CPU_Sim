@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public final class Config {
 
-    public static String NF;
-    public static String NW;
-    public static String NI;
-    public static String NR;
-    public static String NB;
+    public static int NF;
+    public static int NW;
+    public static int NI;
+    public static int NR;
+    public static int NB;
 
 
     // No one can instantiate this class
@@ -27,19 +27,19 @@ public final class Config {
 
                 switch(key.toUpperCase()) {
                     case "NF": 
-                        NF = value;
+                        NF = Integer.valueOf(value);
                         break;
                     case "NI":
-                        NI = value;
+                        NI = Integer.valueOf(value);
                         break;
                     case "NW":
-                        NW = value;
+                        NW = Integer.valueOf(value);
                         break;
                     case "NR":
-                        NR = value;
+                        NR = Integer.valueOf(value);
                         break;
                     case "NB":
-                        NB = value;
+                        NB = Integer.valueOf(value);
                         break;
                     default:
                         System.out.println("Invalid Key: " + key);

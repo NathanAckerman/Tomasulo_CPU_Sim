@@ -7,7 +7,6 @@ public class Simulator
 	private Integer pc = 1000;
 	private Integer pc2 = 1000;
 
-	private int nf = 2;
 
 	public ArrayList<Unit> units = new ArrayList<Unit>();
 
@@ -18,10 +17,10 @@ public class Simulator
 	public Memory mem = new Memory();
 	public RegisterFile rf = new RegisterFile(mem, rename_table);
 	public RegisterFile rf2 = new RegisterFile(mem, rename_table2);
-	private CDB cdb = new CDB(4, this);
+	private CDB cdb = new CDB(Config.NB, this);
 	private InstructionKiller instr_killer = new InstructionKiller(this);
-	public ROB rob = new ROB(16, rename_table, instr_killer);
-	public ROB rob2 = new ROB(16, rename_table2, instr_killer);
+	public ROB rob = new ROB(Config.NR, rename_table, instr_killer);
+	public ROB rob2 = new ROB(Config.NR, rename_table2, instr_killer);
 	public WB wb = new WB(1, units);
 	private BTB btb = new BTB(); 
 	private BTB btb2 = new BTB(); 
@@ -52,7 +51,7 @@ public class Simulator
 		
 		// TODO parameterize this
 		// this also does wb and rob
-		int min_rob_bw = 2;
+		int min_rob_bw = Config.NB/2;
 		cdb.doCycle(min_rob_bw);
 
 
@@ -80,7 +79,6 @@ public class Simulator
 
 		this.rf.printRegisters();
 		System.out.println("\n\n");
-		System.out.println("Sim Ending at cycle: "+this.cycle);
 
 	}
 
@@ -121,7 +119,6 @@ public class Simulator
 		System.out.println("-------------------");
 
 		System.out.println("\n\n");
-		System.out.println("Sim Ending at cycle: "+this.cycle);
 	}
 
 	public void run_cycle_smt()
@@ -130,9 +127,8 @@ public class Simulator
 		System.out.println("Cycle: "+this.cycle);
 		System.out.println("\n\n*******************\n\n");
 
-		// TODO parameterize this
 		// this also does wb and rob
-		int min_rob_bw = 2;
+		int min_rob_bw = Config.NB/2;
 		cdb.doCycle(min_rob_bw);
 
 
@@ -156,8 +152,8 @@ public class Simulator
 
 			Simulator simulator = new Simulator();
 
-			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc, 1, simulator.nf);
-			simulator.issuer =  new Issuer(8, 4, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
+			InstructionCache instruction_cache = new InstructionCache(simulator.issuer, simulator.pc, 1, Config.NF);
+			simulator.issuer =  new Issuer(Config.NI, Config.NW, simulator.units, simulator.rob, simulator.rename_table, instruction_cache, simulator.btb, simulator.rf);
 			simulator.instruction_cache = instruction_cache;
 			simulator.instruction_cache.issuer = simulator.issuer;
 			simulator.instr_eval = new InstructionEvaluator(simulator.rob, simulator.rob2, simulator.btb, simulator.btb2, simulator.mem, instruction_cache, null);
@@ -167,10 +163,9 @@ public class Simulator
 			System.out.println(instruction_cache);
 			simulator.run();
 
-			//System.out.println(instruction_cache.toString());
 			System.out.println(memory.toString());
 			System.out.println("Total committed instructions: " + simulator.rob.committedCount);
-			// TODO: Print cycle count and other information
+			System.out.println("Cycle count is: " + simulator.cycle);
 
 		} else if (args.length == 2) {
 			// Part2: SMT
@@ -186,10 +181,10 @@ public class Simulator
 			Memory memory = simulator.mem;
 
 			// Create new instruction cache object for filepath_1
-			InstructionCache instruction_cache_1 = new InstructionCache(simulator.issuer, simulator.pc, 1, simulator.nf);
+			InstructionCache instruction_cache_1 = new InstructionCache(simulator.issuer, simulator.pc, 1, Config.NF);
 
 			// Create new instruction cache object for filepath_2
-			InstructionCache instruction_cache_2 = new InstructionCache(simulator.issuer, simulator.pc, 2, simulator.nf);
+			InstructionCache instruction_cache_2 = new InstructionCache(simulator.issuer, simulator.pc, 2, Config.NF);
 
 			// Parse file_1 and fill the instruction cache and memory
 			Parser.parseFile(filepath_1, instruction_cache_1, memory, 1);
@@ -197,7 +192,7 @@ public class Simulator
 			// Parse file_2 and fill the instruction cache and memory
 			Parser.parseFile(filepath_2, instruction_cache_2, memory, 2);
 
-			simulator.issuer =  new Issuer(simulator, 8, 4, simulator.units, simulator.rob, simulator.rob2, simulator.rename_table, simulator.rename_table2, instruction_cache_1, instruction_cache_2, simulator.btb, simulator.btb2, simulator.rf, simulator.rf2);
+			simulator.issuer =  new Issuer(simulator, Config.NI, Config.NW, simulator.units, simulator.rob, simulator.rob2, simulator.rename_table, simulator.rename_table2, instruction_cache_1, instruction_cache_2, simulator.btb, simulator.btb2, simulator.rf, simulator.rf2);
 			simulator.instruction_cache = instruction_cache_1;
 			simulator.instruction_cache2 = instruction_cache_2;
 			simulator.instruction_cache.issuer = simulator.issuer;
@@ -214,7 +209,7 @@ public class Simulator
 			System.out.println("Total committed instructions for rob1: " + simulator.rob.committedCount);
 			System.out.println("Total committed instructions for rob2: " + simulator.rob2.committedCount);
 
-			// Print cycle count and other information
+			System.out.println("Cycle count is: " + simulator.cycle);
 			
 		}
 
