@@ -21,7 +21,7 @@ public class ROB
 		back_i = 0;
 		rename_table = table;
 		instr_killer = the_instr_killer;
-		queue = new Instruction[16];
+		queue = new Instruction[size];
 	}
 
 	public int enqueue(Instruction inst)
